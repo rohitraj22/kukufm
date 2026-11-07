@@ -1,0 +1,43 @@
+:root { --teal: #37cfb0; --muted: #9aa6af; }
+.stApp { background: #0b1014; }
+.block-container { max-width: 1240px; padding-top: 2.5rem; padding-bottom: 4rem; container-type:inline-size; }
+[data-testid="stSidebar"] { background: #11191e; border-right: 1px solid #253038; }
+h1, h2, h3, h4 { letter-spacing: -.03em; }
+h2 { font-size: 2rem !important; font-weight: 600 !important; }
+.brand { display:flex; align-items:center; gap:16px; margin:0 0 2rem; }
+.brand-mark { width:48px; height:48px; border:1px solid #2b7666; color:var(--teal); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:650; }
+.brand-mark span { font-size:18px; align-self:flex-start; margin-top:6px; }
+.brand h1 { padding:0; margin:0; font-size:25px; font-weight:650; line-height:1.3; }
+.brand h1 em { color:var(--teal); font-style:normal; }
+.brand p { margin:2px 0 0; font-size:14px; color:var(--muted); }
+.brand-tag { margin-left:auto; color:#81b6aa; border:1px solid #244438; background:#132821; border-radius:20px; padding:6px 11px; font-size:10px; letter-spacing:.13em; }
+[data-testid="stMetric"] { border:1px solid #263038; background:#10191f; border-radius:12px; padding:16px 20px; margin:10px 0 24px; }
+[data-testid="stMetricValue"] { font-size:30px; }
+.promo-card { background:#10181e; border:1px solid #2a363e; border-radius:15px; padding:22px 24px 18px; margin:12px 0 0; }
+.card-top { display:flex; align-items:center; gap:14px; }
+.rank { color:#a5b4bd; background:#1e2a31; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+.card-title { flex:1; min-width:0; }
+.card-title h3 { margin:0; padding:0; font-size:21px; font-weight:550; overflow-wrap:anywhere; }
+.card-title p { font-size:13px; color:var(--muted); margin:6px 0 0; }
+.score { font-size:26px; text-align:right; font-weight:600; white-space:nowrap; }
+.score small { color:#a2afb7; font-size:14px; font-weight:400; }
+.score span { display:block; color:#95a2ac; font-size:11px; font-weight:400; margin-top:2px; }
+.score-track { height:4px; background:#263238; border-radius:5px; overflow:hidden; margin-top:18px; }
+.score-track div { height:100%; background:var(--teal); }
+.chips { display:flex; flex-wrap:wrap; gap:7px; padding-top:13px; }
+.chips span { background:#1a292e; border:1px solid #293a41; border-radius:15px; padding:4px 9px; font-size:11px; color:#afc5ca; }
+.empty { display:flex; justify-content:space-between; gap:15px; padding:28px 12px; font-size:11px; letter-spacing:.12em; color:#8ba39d; }
+[data-testid="stFileUploader"] { border-radius:12px; }
+@container (max-width:650px) {
+  .st-key-upload_panel [data-testid="stHorizontalBlock"] { flex-direction:column; gap:1.5rem; }
+  .st-key-upload_panel [data-testid="stColumn"] { width:100% !important; flex:1 1 100% !important; }
+  .st-key-compare_panel [data-testid="stHorizontalBlock"] { flex-direction:column; }
+  .st-key-compare_panel [data-testid="stColumn"] { width:100% !important; flex:1 1 100% !important; }
+  .st-key-exports_panel [data-testid="stHorizontalBlock"] { flex-direction:column; gap:.5rem; }
+  .st-key-exports_panel [data-testid="stColumn"] { width:100% !important; flex:1 1 100% !important; }
+  .st-key-run_metrics [data-testid="stHorizontalBlock"] { flex-wrap:wrap; }
+  .st-key-run_metrics [data-testid="stColumn"] { min-width:40% !important; flex:1 1 40% !important; }
+  .st-key-run_metrics [data-testid="stMetric"] { margin:0; padding:12px 14px; }
+  .brand-tag { display:none; }
+}
+@media (max-width:700px) { .brand-tag { display:none; } .block-container { padding-top:1.2rem; } .promo-card { padding:16px; } .card-title h3 { font-size:17px; } .score { font-size:22px; } .empty { flex-direction:column; } }

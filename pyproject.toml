@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "story-promo-finder"
+version = "0.3.0"
+description = "Reusable, source-grounded promo discovery for timed story scripts"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+web = ["streamlit==1.67.0"]
+
+[project.scripts]
+promo-finder = "promo_finder.__main__:main"
+promo-benchmark = "promo_finder.benchmark:main"
+
+[tool.setuptools]
+packages = ["promo_finder", "kuku_promos"]
+include-package-data = false

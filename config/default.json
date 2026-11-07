@@ -1,0 +1,11 @@
+{
+  "min_duration_ms": 20000,
+  "max_duration_ms": 60000,
+  "hook_window_ms": 3000,
+  "ending_window_ms": 5000,
+  "min_quality_score": 3,
+  "candidates_per_episode": 2,
+  "language": "Use the input's language; preserve source text verbatim.",
+  "audience": "New viewers unfamiliar with the story.",
+  "weights": {"hook": 30, "cliffhanger": 25, "standalone": 20, "emotion": 15, "escalation": 10}
+}

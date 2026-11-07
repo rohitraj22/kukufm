@@ -1,0 +1,21 @@
+{
+  "episodes": [
+    {
+      "episode": 907,
+      "logline": "A basketball captain notices a scoring change before the final shot lands. Original synthetic test data.",
+      "beats": [
+        {"kind": "DIALOGUE", "label": "CAPTAIN", "start_ms": 600000, "end_ms": 602500, "text": "The scoreboard changed before she scored!"},
+        {"kind": "CAMERA", "label": "CAMERA", "start_ms": 600000, "end_ms": 604000, "text": "The ball hangs above the basket while two points appear on the visiting team's total."},
+        {"kind": "DIALOGUE", "label": "COACH", "start_ms": 604000, "end_ms": 607000, "text": "That error would decide the championship. Show the referee."},
+        {"kind": "DIALOGUE", "label": "CAPTAIN", "start_ms": 608000, "end_ms": 612000, "text": "The replay operator says the recording was deleted."},
+        {"kind": "ACTION", "label": "ACTION", "start_ms": 612000, "end_ms": 615000, "text": "The captain turns her phone toward a second screen showing an unedited recording."},
+        {"kind": "DIALOGUE", "label": "COACH", "start_ms": 615000, "end_ms": 618000, "text": "Keep your copy. I'll demand a review."},
+        {"kind": "DIALOGUE", "label": "CAPTAIN", "start_ms": 619000, "end_ms": 622000, "text": "There's someone entering the scoring booth on this video."},
+        {"kind": "ACTION", "label": "ACTION", "start_ms": 624000, "end_ms": 627000, "text": "The captain freezes the video on a jacket identical to the coach's."},
+        {"kind": "DIALOGUE", "label": "CAPTAIN", "start_ms": 627000, "end_ms": 630000, "text": "Coach, why were you in the booth?"},
+        {"kind": "ACTION", "label": "ACTION", "start_ms": 631000, "end_ms": 635000, "text": "The coach reaches for the phone while the captain steps back."},
+        {"kind": "DIALOGUE", "label": "COACH", "start_ms": 636000, "end_ms": 642000, "text": "I was reporting the fault. The referee has already corrected the score."}
+      ]
+    }
+  ]
+}

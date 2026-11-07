@@ -1,0 +1,56 @@
+EPISODE NUMBER: Episode 204
+EPISODE LOGLINE: A station engineer finds an internal command opening an occupied airlock.
+CONTINUITY NOTES: Entirely fictional public test data created for Promo Finder.
+
+--- SCRIPT START ---
+
+SCENE 01
+Scene heading: INT. ORBITAL CONTROL ROOM – NIGHT
+Scene start: 00:00.00
+Scene end: 00:42.00
+
+**RAE (Alarmed):**
+Start: (00:00.00) | End: (00:02.50)
+"The airlock opened from inside!"
+
+**CAMERA:**
+Start: (00:00.00) | End: (00:04.00)
+A red warning illuminates a control panel marked OCCUPIED as air streams into space.
+
+**IVO (Focused):**
+Start: (00:04.00) | End: (00:07.00)
+"Override it. The survey crew is still in there."
+
+**RAE (Urgent):**
+Start: (00:08.00) | End: (00:12.00)
+"Someone disabled my access. I can't close it."
+
+**ACTION:**
+Start: (00:12.00) | End: (00:15.00)
+Ivo searches the console for the command log while the oxygen indicator falls.
+
+**IVO (Confused):**
+Start: (00:15.00) | End: (00:18.00)
+"Only two people have clearance for that command."
+
+**RAE (Firm):**
+Start: (00:19.00) | End: (00:22.00)
+"We're both standing here. Check who sent it."
+
+**SOUND FX:**
+Start: (00:24.00) | End: (00:27.00)
+The console chimes as a crew member pounds on the inner airlock window.
+
+**IVO (Shaken):**
+Start: (00:27.00) | End: (00:30.00)
+"The command came from your suit."
+
+**ACTION:**
+Start: (00:31.00) | End: (00:35.00)
+Rae opens her wrist panel and finds a remote session controlling her suit.
+
+**CONTROL (Over radio):**
+Start: (00:36.00) | End: (00:42.00)
+"End of simulation. The training officer planted the remote session. Everyone is safe."
+
+--- SCRIPT END ---

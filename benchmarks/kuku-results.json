@@ -1,0 +1,32 @@
+{
+  "product_version": "0.2.0",
+  "prompt_version": "promo-v3-general",
+  "dataset": "Kuku private 50-episode development benchmark",
+  "complete_run": {
+    "episodes": 50,
+    "beats": 3727,
+    "legal_cut_pairs": 21421,
+    "validated_cut_pairs": 21421,
+    "complete": true,
+    "episodes_processed": 50,
+    "proposed": 26,
+    "grounded": 18,
+    "accepted": 16,
+    "shortlisted": 10,
+    "model": "gemini-3.1-flash-lite",
+    "critic_model": "gemini-3.1-flash-lite",
+    "network_calls": 21
+  },
+  "stronger_reviewer_run": {
+    "complete": false,
+    "episodes_processed": 8,
+    "model": "gemini-3.1-flash-lite",
+    "critic_model": "gemini-3.5-flash"
+  },
+  "stronger_reviewer_status": "Daily free-tier reviewer quota reached; partial outputs preserved privately.",
+  "tests_passed": 48,
+  "human_editorial_precision_measured": false,
+  "recall_measured": false,
+  "ad_performance_measured": false,
+  "privacy": "Aggregate results only. No source filenames, text, character names or per-episode cut points."
+}

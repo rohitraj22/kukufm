@@ -1,0 +1,15 @@
+{
+  "name": "Kuku private screenplay benchmark",
+  "expected_episodes": 50,
+  "expected_beats": 3727,
+  "policy": {
+    "min_duration_ms": 20000,
+    "max_duration_ms": 60000,
+    "hook_window_ms": 3000,
+    "ending_window_ms": 5000,
+    "language": "English. Preserve source text verbatim.",
+    "audience": "New US viewers of serialized microdrama, with no prior story knowledge."
+  },
+  "evaluation_role": "Primary development benchmark; not a held-out generalization test.",
+  "privacy": "Inputs, excerpts, raw responses and reports stay private. Publish aggregate metrics only."
+}

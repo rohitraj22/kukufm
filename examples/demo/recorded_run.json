@@ -1,0 +1,1776 @@
+{
+  "coverage": [
+    {
+      "episode": 204,
+      "file": "airlock.txt",
+      "sha256": "5a96df4cfcf57bdb8686b40f1ebd3dfc77abfa11a0bcd58916f2c564928957e1",
+      "beats": 11,
+      "status": "ai_processed",
+      "candidate_count": 1
+    },
+    {
+      "episode": 907,
+      "file": "scoreboard.json",
+      "sha256": "25a17e4fc63e27f1c5861c75b7e40f8377edb032b8efa6ec8a5ece4f0288ab10",
+      "beats": 11,
+      "status": "ai_processed",
+      "candidate_count": 2
+    }
+  ],
+  "grounded_candidates": [
+    {
+      "title": "The Airlock Sabotage",
+      "angle": "Techno-thriller mystery",
+      "segments": [
+        {
+          "episode": 204,
+          "source_file": "airlock.txt",
+          "source_sha256": "5a96df4cfcf57bdb8686b40f1ebd3dfc77abfa11a0bcd58916f2c564928957e1",
+          "start_beat": "E204-B001",
+          "end_beat": "E204-B009",
+          "start_ms": 0,
+          "end_ms": 30000,
+          "start": "00:00.000",
+          "end": "00:30.000",
+          "duration_seconds": 30.0,
+          "beats": [
+            {
+              "id": "E204-B001",
+              "episode": 204,
+              "label": "RAE (Alarmed)",
+              "kind": "DIALOGUE",
+              "start_ms": 0,
+              "end_ms": 2500,
+              "text": "\"The airlock opened from inside!\"",
+              "source_line": 12,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B002",
+              "episode": 204,
+              "label": "CAMERA",
+              "kind": "CAMERA",
+              "start_ms": 0,
+              "end_ms": 4000,
+              "text": "A red warning illuminates a control panel marked OCCUPIED as air streams into space.",
+              "source_line": 16,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B003",
+              "episode": 204,
+              "label": "IVO (Focused)",
+              "kind": "DIALOGUE",
+              "start_ms": 4000,
+              "end_ms": 7000,
+              "text": "\"Override it. The survey crew is still in there.\"",
+              "source_line": 20,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B004",
+              "episode": 204,
+              "label": "RAE (Urgent)",
+              "kind": "DIALOGUE",
+              "start_ms": 8000,
+              "end_ms": 12000,
+              "text": "\"Someone disabled my access. I can't close it.\"",
+              "source_line": 24,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B005",
+              "episode": 204,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 12000,
+              "end_ms": 15000,
+              "text": "Ivo searches the console for the command log while the oxygen indicator falls.",
+              "source_line": 28,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B006",
+              "episode": 204,
+              "label": "IVO (Confused)",
+              "kind": "DIALOGUE",
+              "start_ms": 15000,
+              "end_ms": 18000,
+              "text": "\"Only two people have clearance for that command.\"",
+              "source_line": 32,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B007",
+              "episode": 204,
+              "label": "RAE (Firm)",
+              "kind": "DIALOGUE",
+              "start_ms": 19000,
+              "end_ms": 22000,
+              "text": "\"We're both standing here. Check who sent it.\"",
+              "source_line": 36,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B008",
+              "episode": 204,
+              "label": "SOUND FX",
+              "kind": "SOUND FX",
+              "start_ms": 24000,
+              "end_ms": 27000,
+              "text": "The console chimes as a crew member pounds on the inner airlock window.",
+              "source_line": 40,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B009",
+              "episode": 204,
+              "label": "IVO (Shaken)",
+              "kind": "DIALOGUE",
+              "start_ms": 27000,
+              "end_ms": 30000,
+              "text": "\"The command came from your suit.\"",
+              "source_line": 44,
+              "fully_included": true
+            }
+          ]
+        }
+      ],
+      "hook_beat": "E204-B001",
+      "cliffhanger_beat": "E204-B009",
+      "hook": "An engineer discovers an airlock has been opened from the inside while a crew is trapped within.",
+      "cliffhanger": "Ivo reveals that the command to open the airlock originated from Rae's own suit, implicating her in the potential murder of her colleagues.",
+      "why_it_works": "The clip establishes high stakes immediately with a life-or-death situation. The mystery of the 'insider' threat creates a compelling whodunit dynamic that keeps the viewer engaged until the final accusation.",
+      "scores": {
+        "hook": 5,
+        "cliffhanger": 5,
+        "standalone": 4,
+        "emotion": 4,
+        "escalation": 4
+      },
+      "risks": [
+        "The resolution in the full episode (a simulation) might feel like a letdown to viewers expecting a genuine thriller."
+      ],
+      "id": "promo-9bbfc67301b1",
+      "duration_seconds": 30.0,
+      "hook_source": {
+        "id": "E204-B001",
+        "episode": 204,
+        "label": "RAE (Alarmed)",
+        "kind": "DIALOGUE",
+        "start_ms": 0,
+        "end_ms": 2500,
+        "text": "\"The airlock opened from inside!\"",
+        "source_line": 12
+      },
+      "cliffhanger_source": {
+        "id": "E204-B009",
+        "episode": 204,
+        "label": "IVO (Shaken)",
+        "kind": "DIALOGUE",
+        "start_ms": 27000,
+        "end_ms": 30000,
+        "text": "\"The command came from your suit.\"",
+        "source_line": 44
+      },
+      "score": 91.0,
+      "validation": "Source IDs, duration, hook timing, ending timing and spoken boundaries passed.",
+      "review_status": "needs_editor_review"
+    },
+    {
+      "title": "The Championship Sabotage",
+      "angle": "Sports Mystery",
+      "segments": [
+        {
+          "episode": 907,
+          "source_file": "scoreboard.json",
+          "source_sha256": "25a17e4fc63e27f1c5861c75b7e40f8377edb032b8efa6ec8a5ece4f0288ab10",
+          "start_beat": "E907-B001",
+          "end_beat": "E907-B011",
+          "start_ms": 600000,
+          "end_ms": 642000,
+          "start": "10:00.000",
+          "end": "10:42.000",
+          "duration_seconds": 42.0,
+          "beats": [
+            {
+              "id": "E907-B001",
+              "episode": 907,
+              "label": "CAPTAIN",
+              "kind": "DIALOGUE",
+              "start_ms": 600000,
+              "end_ms": 602500,
+              "text": "The scoreboard changed before she scored!",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B002",
+              "episode": 907,
+              "label": "CAMERA",
+              "kind": "CAMERA",
+              "start_ms": 600000,
+              "end_ms": 604000,
+              "text": "The ball hangs above the basket while two points appear on the visiting team's total.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B003",
+              "episode": 907,
+              "label": "COACH",
+              "kind": "DIALOGUE",
+              "start_ms": 604000,
+              "end_ms": 607000,
+              "text": "That error would decide the championship. Show the referee.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B004",
+              "episode": 907,
+              "label": "CAPTAIN",
+              "kind": "DIALOGUE",
+              "start_ms": 608000,
+              "end_ms": 612000,
+              "text": "The replay operator says the recording was deleted.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B005",
+              "episode": 907,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 612000,
+              "end_ms": 615000,
+              "text": "The captain turns her phone toward a second screen showing an unedited recording.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B006",
+              "episode": 907,
+              "label": "COACH",
+              "kind": "DIALOGUE",
+              "start_ms": 615000,
+              "end_ms": 618000,
+              "text": "Keep your copy. I'll demand a review.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B007",
+              "episode": 907,
+              "label": "CAPTAIN",
+              "kind": "DIALOGUE",
+              "start_ms": 619000,
+              "end_ms": 622000,
+              "text": "There's someone entering the scoring booth on this video.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B008",
+              "episode": 907,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 624000,
+              "end_ms": 627000,
+              "text": "The captain freezes the video on a jacket identical to the coach's.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B009",
+              "episode": 907,
+              "label": "CAPTAIN",
+              "kind": "DIALOGUE",
+              "start_ms": 627000,
+              "end_ms": 630000,
+              "text": "Coach, why were you in the booth?",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B010",
+              "episode": 907,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 631000,
+              "end_ms": 635000,
+              "text": "The coach reaches for the phone while the captain steps back.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B011",
+              "episode": 907,
+              "label": "COACH",
+              "kind": "DIALOGUE",
+              "start_ms": 636000,
+              "end_ms": 642000,
+              "text": "I was reporting the fault. The referee has already corrected the score.",
+              "source_line": null,
+              "fully_included": true
+            }
+          ]
+        }
+      ],
+      "hook_beat": "E907-B001",
+      "cliffhanger_beat": "E907-B011",
+      "hook": "The scoreboard changed before she scored!",
+      "cliffhanger": "I was reporting the fault. The referee has already corrected the score.",
+      "why_it_works": "The clip establishes a clear conflict involving a potential cheating scandal in a high-stakes sports environment. It moves quickly from the initial observation of an error to the discovery of evidence, culminating in a direct confrontation between the captain and the coach that leaves the viewer questioning the coach's true motives.",
+      "scores": {
+        "hook": 5,
+        "cliffhanger": 4,
+        "standalone": 4,
+        "emotion": 3,
+        "escalation": 4
+      },
+      "risks": [
+        "The resolution of the score correction at the end might feel like a premature answer to the mystery.",
+        "Requires the audience to quickly grasp the significance of a scoreboard error."
+      ],
+      "id": "promo-ed97dfcafa79",
+      "duration_seconds": 42.0,
+      "hook_source": {
+        "id": "E907-B001",
+        "episode": 907,
+        "label": "CAPTAIN",
+        "kind": "DIALOGUE",
+        "start_ms": 600000,
+        "end_ms": 602500,
+        "text": "The scoreboard changed before she scored!",
+        "source_line": null
+      },
+      "cliffhanger_source": {
+        "id": "E907-B011",
+        "episode": 907,
+        "label": "COACH",
+        "kind": "DIALOGUE",
+        "start_ms": 636000,
+        "end_ms": 642000,
+        "text": "I was reporting the fault. The referee has already corrected the score.",
+        "source_line": null
+      },
+      "score": 83.0,
+      "validation": "Source IDs, duration, hook timing, ending timing and spoken boundaries passed.",
+      "review_status": "needs_editor_review"
+    },
+    {
+      "title": "Complete-scene review challenge",
+      "angle": "Synthetic editorial challenge",
+      "segments": [
+        {
+          "episode": 204,
+          "source_file": "airlock.txt",
+          "source_sha256": "5a96df4cfcf57bdb8686b40f1ebd3dfc77abfa11a0bcd58916f2c564928957e1",
+          "start_beat": "E204-B001",
+          "end_beat": "E204-B011",
+          "start_ms": 0,
+          "end_ms": 42000,
+          "start": "00:00.000",
+          "end": "00:42.000",
+          "duration_seconds": 42.0,
+          "beats": [
+            {
+              "id": "E204-B001",
+              "episode": 204,
+              "label": "RAE (Alarmed)",
+              "kind": "DIALOGUE",
+              "start_ms": 0,
+              "end_ms": 2500,
+              "text": "\"The airlock opened from inside!\"",
+              "source_line": 12,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B002",
+              "episode": 204,
+              "label": "CAMERA",
+              "kind": "CAMERA",
+              "start_ms": 0,
+              "end_ms": 4000,
+              "text": "A red warning illuminates a control panel marked OCCUPIED as air streams into space.",
+              "source_line": 16,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B003",
+              "episode": 204,
+              "label": "IVO (Focused)",
+              "kind": "DIALOGUE",
+              "start_ms": 4000,
+              "end_ms": 7000,
+              "text": "\"Override it. The survey crew is still in there.\"",
+              "source_line": 20,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B004",
+              "episode": 204,
+              "label": "RAE (Urgent)",
+              "kind": "DIALOGUE",
+              "start_ms": 8000,
+              "end_ms": 12000,
+              "text": "\"Someone disabled my access. I can't close it.\"",
+              "source_line": 24,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B005",
+              "episode": 204,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 12000,
+              "end_ms": 15000,
+              "text": "Ivo searches the console for the command log while the oxygen indicator falls.",
+              "source_line": 28,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B006",
+              "episode": 204,
+              "label": "IVO (Confused)",
+              "kind": "DIALOGUE",
+              "start_ms": 15000,
+              "end_ms": 18000,
+              "text": "\"Only two people have clearance for that command.\"",
+              "source_line": 32,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B007",
+              "episode": 204,
+              "label": "RAE (Firm)",
+              "kind": "DIALOGUE",
+              "start_ms": 19000,
+              "end_ms": 22000,
+              "text": "\"We're both standing here. Check who sent it.\"",
+              "source_line": 36,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B008",
+              "episode": 204,
+              "label": "SOUND FX",
+              "kind": "SOUND FX",
+              "start_ms": 24000,
+              "end_ms": 27000,
+              "text": "The console chimes as a crew member pounds on the inner airlock window.",
+              "source_line": 40,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B009",
+              "episode": 204,
+              "label": "IVO (Shaken)",
+              "kind": "DIALOGUE",
+              "start_ms": 27000,
+              "end_ms": 30000,
+              "text": "\"The command came from your suit.\"",
+              "source_line": 44,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B010",
+              "episode": 204,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 31000,
+              "end_ms": 35000,
+              "text": "Rae opens her wrist panel and finds a remote session controlling her suit.",
+              "source_line": 48,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B011",
+              "episode": 204,
+              "label": "CONTROL (Over radio)",
+              "kind": "DIALOGUE",
+              "start_ms": 36000,
+              "end_ms": 42000,
+              "text": "\"End of simulation. The training officer planted the remote session. Everyone is safe.\"",
+              "source_line": 52,
+              "fully_included": true
+            }
+          ]
+        }
+      ],
+      "hook_beat": "E204-B001",
+      "cliffhanger_beat": "E204-B011",
+      "hook": "Unrated opening; selected only from legal timing boundaries.",
+      "cliffhanger": "Unrated ending; an unresolved question has not been established.",
+      "why_it_works": "Deliberately constructed timing-valid challenge; not an AI discovery recommendation.",
+      "scores": {
+        "hook": 0,
+        "cliffhanger": 0,
+        "standalone": 0,
+        "emotion": 0,
+        "escalation": 0
+      },
+      "risks": [
+        "Not AI-reviewed. All quality scores are zero/unrated; an editor must assess the content."
+      ],
+      "id": "promo-82acd54d18c2",
+      "duration_seconds": 42.0,
+      "hook_source": {
+        "id": "E204-B001",
+        "episode": 204,
+        "label": "RAE (Alarmed)",
+        "kind": "DIALOGUE",
+        "start_ms": 0,
+        "end_ms": 2500,
+        "text": "\"The airlock opened from inside!\"",
+        "source_line": 12
+      },
+      "cliffhanger_source": {
+        "id": "E204-B011",
+        "episode": 204,
+        "label": "CONTROL (Over radio)",
+        "kind": "DIALOGUE",
+        "start_ms": 36000,
+        "end_ms": 42000,
+        "text": "\"End of simulation. The training officer planted the remote session. Everyone is safe.\"",
+        "source_line": 52
+      },
+      "score": 0.0,
+      "validation": "Source IDs, duration, hook timing, ending timing and spoken boundaries passed.",
+      "review_status": "needs_editor_review"
+    },
+    {
+      "title": "Complete-scene review challenge",
+      "angle": "Synthetic editorial challenge",
+      "segments": [
+        {
+          "episode": 204,
+          "source_file": "airlock.txt",
+          "source_sha256": "5a96df4cfcf57bdb8686b40f1ebd3dfc77abfa11a0bcd58916f2c564928957e1",
+          "start_beat": "E204-B007",
+          "end_beat": "E204-B011",
+          "start_ms": 19000,
+          "end_ms": 42000,
+          "start": "00:19.000",
+          "end": "00:42.000",
+          "duration_seconds": 23.0,
+          "beats": [
+            {
+              "id": "E204-B007",
+              "episode": 204,
+              "label": "RAE (Firm)",
+              "kind": "DIALOGUE",
+              "start_ms": 19000,
+              "end_ms": 22000,
+              "text": "\"We're both standing here. Check who sent it.\"",
+              "source_line": 36,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B008",
+              "episode": 204,
+              "label": "SOUND FX",
+              "kind": "SOUND FX",
+              "start_ms": 24000,
+              "end_ms": 27000,
+              "text": "The console chimes as a crew member pounds on the inner airlock window.",
+              "source_line": 40,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B009",
+              "episode": 204,
+              "label": "IVO (Shaken)",
+              "kind": "DIALOGUE",
+              "start_ms": 27000,
+              "end_ms": 30000,
+              "text": "\"The command came from your suit.\"",
+              "source_line": 44,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B010",
+              "episode": 204,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 31000,
+              "end_ms": 35000,
+              "text": "Rae opens her wrist panel and finds a remote session controlling her suit.",
+              "source_line": 48,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B011",
+              "episode": 204,
+              "label": "CONTROL (Over radio)",
+              "kind": "DIALOGUE",
+              "start_ms": 36000,
+              "end_ms": 42000,
+              "text": "\"End of simulation. The training officer planted the remote session. Everyone is safe.\"",
+              "source_line": 52,
+              "fully_included": true
+            }
+          ]
+        }
+      ],
+      "hook_beat": "E204-B007",
+      "cliffhanger_beat": "E204-B011",
+      "hook": "Unrated opening; selected only from legal timing boundaries.",
+      "cliffhanger": "Unrated ending; an unresolved question has not been established.",
+      "why_it_works": "Deliberately constructed timing-valid challenge; not an AI discovery recommendation.",
+      "scores": {
+        "hook": 0,
+        "cliffhanger": 0,
+        "standalone": 0,
+        "emotion": 0,
+        "escalation": 0
+      },
+      "risks": [
+        "Not AI-reviewed. All quality scores are zero/unrated; an editor must assess the content."
+      ],
+      "id": "promo-3c9bd4bdc468",
+      "duration_seconds": 23.0,
+      "hook_source": {
+        "id": "E204-B007",
+        "episode": 204,
+        "label": "RAE (Firm)",
+        "kind": "DIALOGUE",
+        "start_ms": 19000,
+        "end_ms": 22000,
+        "text": "\"We're both standing here. Check who sent it.\"",
+        "source_line": 36
+      },
+      "cliffhanger_source": {
+        "id": "E204-B011",
+        "episode": 204,
+        "label": "CONTROL (Over radio)",
+        "kind": "DIALOGUE",
+        "start_ms": 36000,
+        "end_ms": 42000,
+        "text": "\"End of simulation. The training officer planted the remote session. Everyone is safe.\"",
+        "source_line": 52
+      },
+      "score": 0.0,
+      "validation": "Source IDs, duration, hook timing, ending timing and spoken boundaries passed.",
+      "review_status": "needs_editor_review"
+    },
+    {
+      "title": "Complete-scene review challenge",
+      "angle": "Synthetic editorial challenge",
+      "segments": [
+        {
+          "episode": 907,
+          "source_file": "scoreboard.json",
+          "source_sha256": "25a17e4fc63e27f1c5861c75b7e40f8377edb032b8efa6ec8a5ece4f0288ab10",
+          "start_beat": "E907-B007",
+          "end_beat": "E907-B011",
+          "start_ms": 619000,
+          "end_ms": 642000,
+          "start": "10:19.000",
+          "end": "10:42.000",
+          "duration_seconds": 23.0,
+          "beats": [
+            {
+              "id": "E907-B007",
+              "episode": 907,
+              "label": "CAPTAIN",
+              "kind": "DIALOGUE",
+              "start_ms": 619000,
+              "end_ms": 622000,
+              "text": "There's someone entering the scoring booth on this video.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B008",
+              "episode": 907,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 624000,
+              "end_ms": 627000,
+              "text": "The captain freezes the video on a jacket identical to the coach's.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B009",
+              "episode": 907,
+              "label": "CAPTAIN",
+              "kind": "DIALOGUE",
+              "start_ms": 627000,
+              "end_ms": 630000,
+              "text": "Coach, why were you in the booth?",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B010",
+              "episode": 907,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 631000,
+              "end_ms": 635000,
+              "text": "The coach reaches for the phone while the captain steps back.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B011",
+              "episode": 907,
+              "label": "COACH",
+              "kind": "DIALOGUE",
+              "start_ms": 636000,
+              "end_ms": 642000,
+              "text": "I was reporting the fault. The referee has already corrected the score.",
+              "source_line": null,
+              "fully_included": true
+            }
+          ]
+        }
+      ],
+      "hook_beat": "E907-B007",
+      "cliffhanger_beat": "E907-B011",
+      "hook": "Unrated opening; selected only from legal timing boundaries.",
+      "cliffhanger": "Unrated ending; an unresolved question has not been established.",
+      "why_it_works": "Deliberately constructed timing-valid challenge; not an AI discovery recommendation.",
+      "scores": {
+        "hook": 0,
+        "cliffhanger": 0,
+        "standalone": 0,
+        "emotion": 0,
+        "escalation": 0
+      },
+      "risks": [
+        "Not AI-reviewed. All quality scores are zero/unrated; an editor must assess the content."
+      ],
+      "id": "promo-c84c41b8b556",
+      "duration_seconds": 23.0,
+      "hook_source": {
+        "id": "E907-B007",
+        "episode": 907,
+        "label": "CAPTAIN",
+        "kind": "DIALOGUE",
+        "start_ms": 619000,
+        "end_ms": 622000,
+        "text": "There's someone entering the scoring booth on this video.",
+        "source_line": null
+      },
+      "cliffhanger_source": {
+        "id": "E907-B011",
+        "episode": 907,
+        "label": "COACH",
+        "kind": "DIALOGUE",
+        "start_ms": 636000,
+        "end_ms": 642000,
+        "text": "I was reporting the fault. The referee has already corrected the score.",
+        "source_line": null
+      },
+      "score": 0.0,
+      "validation": "Source IDs, duration, hook timing, ending timing and spoken boundaries passed.",
+      "review_status": "needs_editor_review"
+    }
+  ],
+  "accepted_candidates": [
+    {
+      "title": "The Airlock Sabotage",
+      "angle": "Techno-thriller mystery",
+      "segments": [
+        {
+          "episode": 204,
+          "source_file": "airlock.txt",
+          "source_sha256": "5a96df4cfcf57bdb8686b40f1ebd3dfc77abfa11a0bcd58916f2c564928957e1",
+          "start_beat": "E204-B001",
+          "end_beat": "E204-B009",
+          "start_ms": 0,
+          "end_ms": 30000,
+          "start": "00:00.000",
+          "end": "00:30.000",
+          "duration_seconds": 30.0,
+          "beats": [
+            {
+              "id": "E204-B001",
+              "episode": 204,
+              "label": "RAE (Alarmed)",
+              "kind": "DIALOGUE",
+              "start_ms": 0,
+              "end_ms": 2500,
+              "text": "\"The airlock opened from inside!\"",
+              "source_line": 12,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B002",
+              "episode": 204,
+              "label": "CAMERA",
+              "kind": "CAMERA",
+              "start_ms": 0,
+              "end_ms": 4000,
+              "text": "A red warning illuminates a control panel marked OCCUPIED as air streams into space.",
+              "source_line": 16,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B003",
+              "episode": 204,
+              "label": "IVO (Focused)",
+              "kind": "DIALOGUE",
+              "start_ms": 4000,
+              "end_ms": 7000,
+              "text": "\"Override it. The survey crew is still in there.\"",
+              "source_line": 20,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B004",
+              "episode": 204,
+              "label": "RAE (Urgent)",
+              "kind": "DIALOGUE",
+              "start_ms": 8000,
+              "end_ms": 12000,
+              "text": "\"Someone disabled my access. I can't close it.\"",
+              "source_line": 24,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B005",
+              "episode": 204,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 12000,
+              "end_ms": 15000,
+              "text": "Ivo searches the console for the command log while the oxygen indicator falls.",
+              "source_line": 28,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B006",
+              "episode": 204,
+              "label": "IVO (Confused)",
+              "kind": "DIALOGUE",
+              "start_ms": 15000,
+              "end_ms": 18000,
+              "text": "\"Only two people have clearance for that command.\"",
+              "source_line": 32,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B007",
+              "episode": 204,
+              "label": "RAE (Firm)",
+              "kind": "DIALOGUE",
+              "start_ms": 19000,
+              "end_ms": 22000,
+              "text": "\"We're both standing here. Check who sent it.\"",
+              "source_line": 36,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B008",
+              "episode": 204,
+              "label": "SOUND FX",
+              "kind": "SOUND FX",
+              "start_ms": 24000,
+              "end_ms": 27000,
+              "text": "The console chimes as a crew member pounds on the inner airlock window.",
+              "source_line": 40,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B009",
+              "episode": 204,
+              "label": "IVO (Shaken)",
+              "kind": "DIALOGUE",
+              "start_ms": 27000,
+              "end_ms": 30000,
+              "text": "\"The command came from your suit.\"",
+              "source_line": 44,
+              "fully_included": true
+            }
+          ]
+        }
+      ],
+      "hook_beat": "E204-B001",
+      "cliffhanger_beat": "E204-B009",
+      "hook": "An engineer discovers an airlock has been opened from the inside while a crew is trapped within.",
+      "cliffhanger": "Ivo reveals that the command to open the airlock originated from Rae's own suit, implicating her in the potential murder of her colleagues.",
+      "why_it_works": "The clip establishes high stakes immediately with a life-or-death situation. The mystery of the 'insider' threat creates a compelling whodunit dynamic that keeps the viewer engaged until the final accusation.",
+      "scores": {
+        "hook": 5,
+        "cliffhanger": 5,
+        "standalone": 4,
+        "emotion": 4,
+        "escalation": 5
+      },
+      "risks": [
+        "The resolution in the full episode (a simulation) might feel like a letdown to viewers expecting a genuine thriller."
+      ],
+      "id": "promo-9bbfc67301b1",
+      "duration_seconds": 30.0,
+      "hook_source": {
+        "id": "E204-B001",
+        "episode": 204,
+        "label": "RAE (Alarmed)",
+        "kind": "DIALOGUE",
+        "start_ms": 0,
+        "end_ms": 2500,
+        "text": "\"The airlock opened from inside!\"",
+        "source_line": 12
+      },
+      "cliffhanger_source": {
+        "id": "E204-B009",
+        "episode": 204,
+        "label": "IVO (Shaken)",
+        "kind": "DIALOGUE",
+        "start_ms": 27000,
+        "end_ms": 30000,
+        "text": "\"The command came from your suit.\"",
+        "source_line": 44
+      },
+      "score": 93.0,
+      "validation": "Source IDs, duration, hook timing, ending timing and spoken boundaries passed.",
+      "review_status": "ai_reviewed_editor_pending",
+      "proposer_scores": {
+        "hook": 5,
+        "cliffhanger": 5,
+        "standalone": 4,
+        "emotion": 4,
+        "escalation": 4
+      },
+      "critic": {
+        "candidate_id": "promo-9bbfc67301b1",
+        "verdict": "keep",
+        "reason": "The clip opens with an immediate, high-stakes emergency regarding an airlock opening from the inside. The tension escalates as the characters realize the command originated from one of their own suits, leaving the viewer with the unresolved mystery of who is responsible and why.",
+        "scores": {
+          "hook": 5,
+          "cliffhanger": 5,
+          "standalone": 4,
+          "emotion": 4,
+          "escalation": 5
+        }
+      }
+    },
+    {
+      "title": "The Championship Sabotage",
+      "angle": "Sports Mystery",
+      "segments": [
+        {
+          "episode": 907,
+          "source_file": "scoreboard.json",
+          "source_sha256": "25a17e4fc63e27f1c5861c75b7e40f8377edb032b8efa6ec8a5ece4f0288ab10",
+          "start_beat": "E907-B001",
+          "end_beat": "E907-B011",
+          "start_ms": 600000,
+          "end_ms": 642000,
+          "start": "10:00.000",
+          "end": "10:42.000",
+          "duration_seconds": 42.0,
+          "beats": [
+            {
+              "id": "E907-B001",
+              "episode": 907,
+              "label": "CAPTAIN",
+              "kind": "DIALOGUE",
+              "start_ms": 600000,
+              "end_ms": 602500,
+              "text": "The scoreboard changed before she scored!",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B002",
+              "episode": 907,
+              "label": "CAMERA",
+              "kind": "CAMERA",
+              "start_ms": 600000,
+              "end_ms": 604000,
+              "text": "The ball hangs above the basket while two points appear on the visiting team's total.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B003",
+              "episode": 907,
+              "label": "COACH",
+              "kind": "DIALOGUE",
+              "start_ms": 604000,
+              "end_ms": 607000,
+              "text": "That error would decide the championship. Show the referee.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B004",
+              "episode": 907,
+              "label": "CAPTAIN",
+              "kind": "DIALOGUE",
+              "start_ms": 608000,
+              "end_ms": 612000,
+              "text": "The replay operator says the recording was deleted.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B005",
+              "episode": 907,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 612000,
+              "end_ms": 615000,
+              "text": "The captain turns her phone toward a second screen showing an unedited recording.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B006",
+              "episode": 907,
+              "label": "COACH",
+              "kind": "DIALOGUE",
+              "start_ms": 615000,
+              "end_ms": 618000,
+              "text": "Keep your copy. I'll demand a review.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B007",
+              "episode": 907,
+              "label": "CAPTAIN",
+              "kind": "DIALOGUE",
+              "start_ms": 619000,
+              "end_ms": 622000,
+              "text": "There's someone entering the scoring booth on this video.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B008",
+              "episode": 907,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 624000,
+              "end_ms": 627000,
+              "text": "The captain freezes the video on a jacket identical to the coach's.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B009",
+              "episode": 907,
+              "label": "CAPTAIN",
+              "kind": "DIALOGUE",
+              "start_ms": 627000,
+              "end_ms": 630000,
+              "text": "Coach, why were you in the booth?",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B010",
+              "episode": 907,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 631000,
+              "end_ms": 635000,
+              "text": "The coach reaches for the phone while the captain steps back.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B011",
+              "episode": 907,
+              "label": "COACH",
+              "kind": "DIALOGUE",
+              "start_ms": 636000,
+              "end_ms": 642000,
+              "text": "I was reporting the fault. The referee has already corrected the score.",
+              "source_line": null,
+              "fully_included": true
+            }
+          ]
+        }
+      ],
+      "hook_beat": "E907-B001",
+      "cliffhanger_beat": "E907-B011",
+      "hook": "The scoreboard changed before she scored!",
+      "cliffhanger": "I was reporting the fault. The referee has already corrected the score.",
+      "why_it_works": "The clip establishes a clear conflict involving a potential cheating scandal in a high-stakes sports environment. It moves quickly from the initial observation of an error to the discovery of evidence, culminating in a direct confrontation between the captain and the coach that leaves the viewer questioning the coach's true motives.",
+      "scores": {
+        "hook": 5,
+        "cliffhanger": 4,
+        "standalone": 4,
+        "emotion": 3,
+        "escalation": 4
+      },
+      "risks": [
+        "The resolution of the score correction at the end might feel like a premature answer to the mystery.",
+        "Requires the audience to quickly grasp the significance of a scoreboard error."
+      ],
+      "id": "promo-ed97dfcafa79",
+      "duration_seconds": 42.0,
+      "hook_source": {
+        "id": "E907-B001",
+        "episode": 907,
+        "label": "CAPTAIN",
+        "kind": "DIALOGUE",
+        "start_ms": 600000,
+        "end_ms": 602500,
+        "text": "The scoreboard changed before she scored!",
+        "source_line": null
+      },
+      "cliffhanger_source": {
+        "id": "E907-B011",
+        "episode": 907,
+        "label": "COACH",
+        "kind": "DIALOGUE",
+        "start_ms": 636000,
+        "end_ms": 642000,
+        "text": "I was reporting the fault. The referee has already corrected the score.",
+        "source_line": null
+      },
+      "score": 83.0,
+      "validation": "Source IDs, duration, hook timing, ending timing and spoken boundaries passed.",
+      "review_status": "ai_reviewed_editor_pending",
+      "proposer_scores": {
+        "hook": 5,
+        "cliffhanger": 4,
+        "standalone": 4,
+        "emotion": 3,
+        "escalation": 4
+      },
+      "critic": {
+        "candidate_id": "promo-ed97dfcafa79",
+        "verdict": "keep",
+        "reason": "The opening window immediately establishes a suspicious scoring error in a championship game. The clip escalates through the discovery of a deleted recording and the captain identifying the coach in the scoring booth, leaving the viewer with the unresolved question of whether the coach is guilty of tampering or telling the truth.",
+        "scores": {
+          "hook": 5,
+          "cliffhanger": 4,
+          "standalone": 4,
+          "emotion": 3,
+          "escalation": 4
+        }
+      }
+    },
+    {
+      "title": "Complete-scene review challenge",
+      "angle": "Synthetic editorial challenge",
+      "segments": [
+        {
+          "episode": 907,
+          "source_file": "scoreboard.json",
+          "source_sha256": "25a17e4fc63e27f1c5861c75b7e40f8377edb032b8efa6ec8a5ece4f0288ab10",
+          "start_beat": "E907-B007",
+          "end_beat": "E907-B011",
+          "start_ms": 619000,
+          "end_ms": 642000,
+          "start": "10:19.000",
+          "end": "10:42.000",
+          "duration_seconds": 23.0,
+          "beats": [
+            {
+              "id": "E907-B007",
+              "episode": 907,
+              "label": "CAPTAIN",
+              "kind": "DIALOGUE",
+              "start_ms": 619000,
+              "end_ms": 622000,
+              "text": "There's someone entering the scoring booth on this video.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B008",
+              "episode": 907,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 624000,
+              "end_ms": 627000,
+              "text": "The captain freezes the video on a jacket identical to the coach's.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B009",
+              "episode": 907,
+              "label": "CAPTAIN",
+              "kind": "DIALOGUE",
+              "start_ms": 627000,
+              "end_ms": 630000,
+              "text": "Coach, why were you in the booth?",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B010",
+              "episode": 907,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 631000,
+              "end_ms": 635000,
+              "text": "The coach reaches for the phone while the captain steps back.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B011",
+              "episode": 907,
+              "label": "COACH",
+              "kind": "DIALOGUE",
+              "start_ms": 636000,
+              "end_ms": 642000,
+              "text": "I was reporting the fault. The referee has already corrected the score.",
+              "source_line": null,
+              "fully_included": true
+            }
+          ]
+        }
+      ],
+      "hook_beat": "E907-B007",
+      "cliffhanger_beat": "E907-B011",
+      "hook": "Unrated opening; selected only from legal timing boundaries.",
+      "cliffhanger": "Unrated ending; an unresolved question has not been established.",
+      "why_it_works": "Deliberately constructed timing-valid challenge; not an AI discovery recommendation.",
+      "scores": {
+        "hook": 4,
+        "cliffhanger": 4,
+        "standalone": 4,
+        "emotion": 3,
+        "escalation": 3
+      },
+      "risks": [
+        "Not AI-reviewed. All quality scores are zero/unrated; an editor must assess the content."
+      ],
+      "id": "promo-c84c41b8b556",
+      "duration_seconds": 23.0,
+      "hook_source": {
+        "id": "E907-B007",
+        "episode": 907,
+        "label": "CAPTAIN",
+        "kind": "DIALOGUE",
+        "start_ms": 619000,
+        "end_ms": 622000,
+        "text": "There's someone entering the scoring booth on this video.",
+        "source_line": null
+      },
+      "cliffhanger_source": {
+        "id": "E907-B011",
+        "episode": 907,
+        "label": "COACH",
+        "kind": "DIALOGUE",
+        "start_ms": 636000,
+        "end_ms": 642000,
+        "text": "I was reporting the fault. The referee has already corrected the score.",
+        "source_line": null
+      },
+      "score": 75.0,
+      "validation": "Source IDs, duration, hook timing, ending timing and spoken boundaries passed.",
+      "review_status": "ai_reviewed_editor_pending",
+      "proposer_scores": {
+        "hook": 0,
+        "cliffhanger": 0,
+        "standalone": 0,
+        "emotion": 0,
+        "escalation": 0
+      },
+      "critic": {
+        "candidate_id": "promo-c84c41b8b556",
+        "verdict": "keep",
+        "reason": "The opening establishes a clear mystery regarding unauthorized access to a scoring booth. The ending leaves the viewer questioning the coach's true intentions and whether the referee's correction is legitimate, maintaining tension.",
+        "scores": {
+          "hook": 4,
+          "cliffhanger": 4,
+          "standalone": 4,
+          "emotion": 3,
+          "escalation": 3
+        }
+      }
+    }
+  ],
+  "rejections": [
+    {
+      "candidate_id": "promo-82acd54d18c2",
+      "stage": "critic",
+      "reason": "The clip contains a definitive resolution at the end, revealing the entire conflict was a simulation, which eliminates any suspense or reason for a new viewer to continue.",
+      "review": {
+        "candidate_id": "promo-82acd54d18c2",
+        "verdict": "reject",
+        "reason": "The clip contains a definitive resolution at the end, revealing the entire conflict was a simulation, which eliminates any suspense or reason for a new viewer to continue.",
+        "scores": {
+          "hook": 5,
+          "cliffhanger": 1,
+          "standalone": 2,
+          "emotion": 3,
+          "escalation": 4
+        }
+      }
+    },
+    {
+      "candidate_id": "promo-3c9bd4bdc468",
+      "stage": "critic",
+      "reason": "The ending explicitly resolves the tension by revealing the situation is a simulation, leaving no unanswered questions or stakes for the viewer.",
+      "review": {
+        "candidate_id": "promo-3c9bd4bdc468",
+        "verdict": "reject",
+        "reason": "The ending explicitly resolves the tension by revealing the situation is a simulation, leaving no unanswered questions or stakes for the viewer.",
+        "scores": {
+          "hook": 3,
+          "cliffhanger": 1,
+          "standalone": 2,
+          "emotion": 2,
+          "escalation": 3
+        }
+      }
+    }
+  ],
+  "shortlist": [
+    {
+      "title": "The Airlock Sabotage",
+      "angle": "Techno-thriller mystery",
+      "segments": [
+        {
+          "episode": 204,
+          "source_file": "airlock.txt",
+          "source_sha256": "5a96df4cfcf57bdb8686b40f1ebd3dfc77abfa11a0bcd58916f2c564928957e1",
+          "start_beat": "E204-B001",
+          "end_beat": "E204-B009",
+          "start_ms": 0,
+          "end_ms": 30000,
+          "start": "00:00.000",
+          "end": "00:30.000",
+          "duration_seconds": 30.0,
+          "beats": [
+            {
+              "id": "E204-B001",
+              "episode": 204,
+              "label": "RAE (Alarmed)",
+              "kind": "DIALOGUE",
+              "start_ms": 0,
+              "end_ms": 2500,
+              "text": "\"The airlock opened from inside!\"",
+              "source_line": 12,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B002",
+              "episode": 204,
+              "label": "CAMERA",
+              "kind": "CAMERA",
+              "start_ms": 0,
+              "end_ms": 4000,
+              "text": "A red warning illuminates a control panel marked OCCUPIED as air streams into space.",
+              "source_line": 16,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B003",
+              "episode": 204,
+              "label": "IVO (Focused)",
+              "kind": "DIALOGUE",
+              "start_ms": 4000,
+              "end_ms": 7000,
+              "text": "\"Override it. The survey crew is still in there.\"",
+              "source_line": 20,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B004",
+              "episode": 204,
+              "label": "RAE (Urgent)",
+              "kind": "DIALOGUE",
+              "start_ms": 8000,
+              "end_ms": 12000,
+              "text": "\"Someone disabled my access. I can't close it.\"",
+              "source_line": 24,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B005",
+              "episode": 204,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 12000,
+              "end_ms": 15000,
+              "text": "Ivo searches the console for the command log while the oxygen indicator falls.",
+              "source_line": 28,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B006",
+              "episode": 204,
+              "label": "IVO (Confused)",
+              "kind": "DIALOGUE",
+              "start_ms": 15000,
+              "end_ms": 18000,
+              "text": "\"Only two people have clearance for that command.\"",
+              "source_line": 32,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B007",
+              "episode": 204,
+              "label": "RAE (Firm)",
+              "kind": "DIALOGUE",
+              "start_ms": 19000,
+              "end_ms": 22000,
+              "text": "\"We're both standing here. Check who sent it.\"",
+              "source_line": 36,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B008",
+              "episode": 204,
+              "label": "SOUND FX",
+              "kind": "SOUND FX",
+              "start_ms": 24000,
+              "end_ms": 27000,
+              "text": "The console chimes as a crew member pounds on the inner airlock window.",
+              "source_line": 40,
+              "fully_included": true
+            },
+            {
+              "id": "E204-B009",
+              "episode": 204,
+              "label": "IVO (Shaken)",
+              "kind": "DIALOGUE",
+              "start_ms": 27000,
+              "end_ms": 30000,
+              "text": "\"The command came from your suit.\"",
+              "source_line": 44,
+              "fully_included": true
+            }
+          ]
+        }
+      ],
+      "hook_beat": "E204-B001",
+      "cliffhanger_beat": "E204-B009",
+      "hook": "An engineer discovers an airlock has been opened from the inside while a crew is trapped within.",
+      "cliffhanger": "Ivo reveals that the command to open the airlock originated from Rae's own suit, implicating her in the potential murder of her colleagues.",
+      "why_it_works": "The clip establishes high stakes immediately with a life-or-death situation. The mystery of the 'insider' threat creates a compelling whodunit dynamic that keeps the viewer engaged until the final accusation.",
+      "scores": {
+        "hook": 5,
+        "cliffhanger": 5,
+        "standalone": 4,
+        "emotion": 4,
+        "escalation": 5
+      },
+      "risks": [
+        "The resolution in the full episode (a simulation) might feel like a letdown to viewers expecting a genuine thriller."
+      ],
+      "id": "promo-9bbfc67301b1",
+      "duration_seconds": 30.0,
+      "hook_source": {
+        "id": "E204-B001",
+        "episode": 204,
+        "label": "RAE (Alarmed)",
+        "kind": "DIALOGUE",
+        "start_ms": 0,
+        "end_ms": 2500,
+        "text": "\"The airlock opened from inside!\"",
+        "source_line": 12
+      },
+      "cliffhanger_source": {
+        "id": "E204-B009",
+        "episode": 204,
+        "label": "IVO (Shaken)",
+        "kind": "DIALOGUE",
+        "start_ms": 27000,
+        "end_ms": 30000,
+        "text": "\"The command came from your suit.\"",
+        "source_line": 44
+      },
+      "score": 93.0,
+      "validation": "Source IDs, duration, hook timing, ending timing and spoken boundaries passed.",
+      "review_status": "ai_reviewed_editor_pending",
+      "proposer_scores": {
+        "hook": 5,
+        "cliffhanger": 5,
+        "standalone": 4,
+        "emotion": 4,
+        "escalation": 4
+      },
+      "critic": {
+        "candidate_id": "promo-9bbfc67301b1",
+        "verdict": "keep",
+        "reason": "The clip opens with an immediate, high-stakes emergency regarding an airlock opening from the inside. The tension escalates as the characters realize the command originated from one of their own suits, leaving the viewer with the unresolved mystery of who is responsible and why.",
+        "scores": {
+          "hook": 5,
+          "cliffhanger": 5,
+          "standalone": 4,
+          "emotion": 4,
+          "escalation": 5
+        }
+      },
+      "rank": 1,
+      "selection_score": 93.0,
+      "diversity_penalty": 0,
+      "rank_reason": "Rubric score 93.0/100; 0 points deducted for repeated angle/episode."
+    },
+    {
+      "title": "The Championship Sabotage",
+      "angle": "Sports Mystery",
+      "segments": [
+        {
+          "episode": 907,
+          "source_file": "scoreboard.json",
+          "source_sha256": "25a17e4fc63e27f1c5861c75b7e40f8377edb032b8efa6ec8a5ece4f0288ab10",
+          "start_beat": "E907-B001",
+          "end_beat": "E907-B011",
+          "start_ms": 600000,
+          "end_ms": 642000,
+          "start": "10:00.000",
+          "end": "10:42.000",
+          "duration_seconds": 42.0,
+          "beats": [
+            {
+              "id": "E907-B001",
+              "episode": 907,
+              "label": "CAPTAIN",
+              "kind": "DIALOGUE",
+              "start_ms": 600000,
+              "end_ms": 602500,
+              "text": "The scoreboard changed before she scored!",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B002",
+              "episode": 907,
+              "label": "CAMERA",
+              "kind": "CAMERA",
+              "start_ms": 600000,
+              "end_ms": 604000,
+              "text": "The ball hangs above the basket while two points appear on the visiting team's total.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B003",
+              "episode": 907,
+              "label": "COACH",
+              "kind": "DIALOGUE",
+              "start_ms": 604000,
+              "end_ms": 607000,
+              "text": "That error would decide the championship. Show the referee.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B004",
+              "episode": 907,
+              "label": "CAPTAIN",
+              "kind": "DIALOGUE",
+              "start_ms": 608000,
+              "end_ms": 612000,
+              "text": "The replay operator says the recording was deleted.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B005",
+              "episode": 907,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 612000,
+              "end_ms": 615000,
+              "text": "The captain turns her phone toward a second screen showing an unedited recording.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B006",
+              "episode": 907,
+              "label": "COACH",
+              "kind": "DIALOGUE",
+              "start_ms": 615000,
+              "end_ms": 618000,
+              "text": "Keep your copy. I'll demand a review.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B007",
+              "episode": 907,
+              "label": "CAPTAIN",
+              "kind": "DIALOGUE",
+              "start_ms": 619000,
+              "end_ms": 622000,
+              "text": "There's someone entering the scoring booth on this video.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B008",
+              "episode": 907,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 624000,
+              "end_ms": 627000,
+              "text": "The captain freezes the video on a jacket identical to the coach's.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B009",
+              "episode": 907,
+              "label": "CAPTAIN",
+              "kind": "DIALOGUE",
+              "start_ms": 627000,
+              "end_ms": 630000,
+              "text": "Coach, why were you in the booth?",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B010",
+              "episode": 907,
+              "label": "ACTION",
+              "kind": "ACTION",
+              "start_ms": 631000,
+              "end_ms": 635000,
+              "text": "The coach reaches for the phone while the captain steps back.",
+              "source_line": null,
+              "fully_included": true
+            },
+            {
+              "id": "E907-B011",
+              "episode": 907,
+              "label": "COACH",
+              "kind": "DIALOGUE",
+              "start_ms": 636000,
+              "end_ms": 642000,
+              "text": "I was reporting the fault. The referee has already corrected the score.",
+              "source_line": null,
+              "fully_included": true
+            }
+          ]
+        }
+      ],
+      "hook_beat": "E907-B001",
+      "cliffhanger_beat": "E907-B011",
+      "hook": "The scoreboard changed before she scored!",
+      "cliffhanger": "I was reporting the fault. The referee has already corrected the score.",
+      "why_it_works": "The clip establishes a clear conflict involving a potential cheating scandal in a high-stakes sports environment. It moves quickly from the initial observation of an error to the discovery of evidence, culminating in a direct confrontation between the captain and the coach that leaves the viewer questioning the coach's true motives.",
+      "scores": {
+        "hook": 5,
+        "cliffhanger": 4,
+        "standalone": 4,
+        "emotion": 3,
+        "escalation": 4
+      },
+      "risks": [
+        "The resolution of the score correction at the end might feel like a premature answer to the mystery.",
+        "Requires the audience to quickly grasp the significance of a scoreboard error."
+      ],
+      "id": "promo-ed97dfcafa79",
+      "duration_seconds": 42.0,
+      "hook_source": {
+        "id": "E907-B001",
+        "episode": 907,
+        "label": "CAPTAIN",
+        "kind": "DIALOGUE",
+        "start_ms": 600000,
+        "end_ms": 602500,
+        "text": "The scoreboard changed before she scored!",
+        "source_line": null
+      },
+      "cliffhanger_source": {
+        "id": "E907-B011",
+        "episode": 907,
+        "label": "COACH",
+        "kind": "DIALOGUE",
+        "start_ms": 636000,
+        "end_ms": 642000,
+        "text": "I was reporting the fault. The referee has already corrected the score.",
+        "source_line": null
+      },
+      "score": 83.0,
+      "validation": "Source IDs, duration, hook timing, ending timing and spoken boundaries passed.",
+      "review_status": "ai_reviewed_editor_pending",
+      "proposer_scores": {
+        "hook": 5,
+        "cliffhanger": 4,
+        "standalone": 4,
+        "emotion": 3,
+        "escalation": 4
+      },
+      "critic": {
+        "candidate_id": "promo-ed97dfcafa79",
+        "verdict": "keep",
+        "reason": "The opening window immediately establishes a suspicious scoring error in a championship game. The clip escalates through the discovery of a deleted recording and the captain identifying the coach in the scoring booth, leaving the viewer with the unresolved question of whether the coach is guilty of tampering or telling the truth.",
+        "scores": {
+          "hook": 5,
+          "cliffhanger": 4,
+          "standalone": 4,
+          "emotion": 3,
+          "escalation": 4
+        }
+      },
+      "rank": 2,
+      "selection_score": 83.0,
+      "diversity_penalty": 0,
+      "rank_reason": "Rubric score 83.0/100; 0 points deducted for repeated angle/episode."
+    }
+  ],
+  "manifest": {
+    "created_utc": "2026-11-07T13:35:47.455735+00:00",
+    "prompt_version": "promo-v3-general",
+    "mode": "gemini",
+    "model": "gemini-3.1-flash-lite",
+    "critic_model": "gemini-3.1-flash-lite",
+    "critic_version": "generic-evidence-v3",
+    "input_count": 2,
+    "batch_count": 2,
+    "weights": {
+      "hook": 30,
+      "cliffhanger": 25,
+      "standalone": 20,
+      "emotion": 15,
+      "escalation": 10
+    },
+    "policy": {
+      "min_duration_ms": 20000,
+      "max_duration_ms": 60000,
+      "hook_window_ms": 3000,
+      "ending_window_ms": 5000,
+      "min_quality_score": 3,
+      "candidates_per_episode": 2,
+      "language": "Use the input's language; preserve source text verbatim.",
+      "audience": "New viewers unfamiliar with the story.",
+      "weights": {
+        "hook": 30,
+        "cliffhanger": 25,
+        "standalone": 20,
+        "emotion": 15,
+        "escalation": 10
+      }
+    },
+    "score_meaning": "Editorial judgment, not measured CTR/install probability.",
+    "limitations": [
+      "Script timestamps must be checked against the final video/audio.",
+      "No audience or ad performance data; human review is required.",
+      "Discovery selects continuous clips only; stitched assembly is not generated.",
+      "Input formats: timed screenplay TXT or normalized JSON; no timing estimates."
+    ],
+    "complete": true,
+    "episodes_processed": 2,
+    "grounded_candidates": 5,
+    "accepted_candidates": 3,
+    "shortlist_count": 2,
+    "rejections": 2,
+    "errors": [],
+    "network_calls_this_run": 5,
+    "cache_hits": 0
+  },
+  "provenance": {
+    "kind": "recorded_synthetic_demo",
+    "synthetic": true,
+    "source": "Original fictional examples shipped in this repository; no Kuku content.",
+    "recorded_date": "2026-11-07",
+    "challenge_candidate_ids": [
+      "promo-82acd54d18c2",
+      "promo-3c9bd4bdc468",
+      "promo-c84c41b8b556"
+    ],
+    "note": "Combines two genuine independent discovery/review runs with deliberately constructed timing-valid cuts reviewed by Gemini. Loading makes no network calls."
+  }
+}
