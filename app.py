@@ -280,9 +280,6 @@ def discover(settings):
             st.success(st.session_state.notice)
             if st.session_state.get("upload_skipped"):
                 st.caption(f"Skipped {st.session_state.upload_skipped} non-script files.")
-        if not result:
-            st.button("Try a demo", on_click=load_demo, width="stretch")
-            st.caption("Original fictional scripts · saved AI results · no key needed")
     if files and signature != st.session_state.get("loaded_upload"):
         return
     episodes = st.session_state.episodes
@@ -503,8 +500,13 @@ def main():
     for key, default in {"episodes": [], "result": None, "reviews": {}, "workspace_label": "", "upload_epoch": 0}.items():
         st.session_state.setdefault(key, default)
     with st.container(key="app_header"):
-        brand, settings_col, reset_col = st.columns([5, 1.5, 1.5], vertical_alignment="center")
+        brand, demo_col, settings_col, reset_col = st.columns([4.5, 1.5, 1.5, 1.5], vertical_alignment="center")
         brand.markdown('<div class="brand"><div class="brand-mark">▶</div><div><h1>PromoPilot <em>AI</em></h1><span class="brand-subtitle">A little spark. A bigger audience.</span></div></div>', unsafe_allow_html=True)
+        with demo_col.popover("Sample demo", width="stretch"):
+            st.caption("Preview sample promos using fictional scripts. No upload or API key needed.")
+            if st.session_state.episodes:
+                st.caption("Opening the demo replaces your current workspace.")
+            st.button("Try a demo", on_click=load_demo, width="stretch")
         with settings_col:
             settings = controls()
         reset_col.button("Start over", on_click=reset_workspace, width="stretch", help="Clears scripts, results, reviews and your entered key.")
