@@ -14,7 +14,7 @@ python3.12 -m venv .venv
 .venv/bin/python -m streamlit run app.py --server.address 127.0.0.1
 ```
 
-The dark editor workspace supports:
+The studio workspace supports:
 
 - Timed TXT / normalized JSON / ZIP upload, episode timelines, and legal cut boundaries.
 - Live Gemini discovery and review, configurable duration/weights/audience, and a clearly unrated offline baseline.

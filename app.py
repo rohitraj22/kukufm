@@ -134,6 +134,7 @@ def card(candidate, baseline=False, review=None):
     status = (("Edited cut: " if modified else "") + review["decision"]) if review else "Editor pending"
     score_label = "Timing check" if baseline else ("Original cut score" if modified else "Editorial score")
     rank = candidate.get("rank", "—")
+    rank = f"{rank:02d}" if isinstance(rank, int) else rank
     st.markdown(f'''<article class="promo-card"><div class="card-top"><div class="rank">{rank}</div>
       <div class="card-title"><h3>{escape(candidate['title'])}</h3><p>Episode {segment['episode']} · {segment['start']} — {segment['end']} · {candidate['duration_seconds']:g}s</p></div>
       <div class="score">{score}<span>{score_label}</span></div></div>
@@ -144,9 +145,9 @@ def card(candidate, baseline=False, review=None):
 
 def show_evidence(candidate, weights, baseline=False):
     st.markdown("**Opening hook**")
-    st.text(candidate["hook_source"]["text"])
+    st.markdown('<blockquote class="script-quote">' + escape(candidate["hook_source"]["text"]) + '</blockquote>', unsafe_allow_html=True)
     st.markdown("**Ending**")
-    st.text(candidate["cliffhanger_source"]["text"])
+    st.markdown('<blockquote class="script-quote">' + escape(candidate["cliffhanger_source"]["text"]) + '</blockquote>', unsafe_allow_html=True)
     with st.expander("Why this clip works"):
         st.write(candidate.get("critic", {}).get("reason") or candidate["why_it_works"])
         st.caption(candidate["hook"])
@@ -220,18 +221,46 @@ def analyze(settings):
         st.error(str(exc))
 
 
+def studio_intro():
+    # Decorative illustration only; no invented clips, timestamps or model scores.
+    bars = "".join(f'<i style="--h:{height}%"></i>' for height in
+                   [18, 32, 55, 28, 68, 88, 48, 65, 96, 60, 38, 72, 90, 54, 28, 44, 76, 58, 34, 18])
+    st.markdown(f'''<section class="studio-hero">
+      <div class="hero-copy"><div class="eyebrow"><span></span> THE PROMO STUDIO</div>
+      <h2>Big stories.<br><em>Unmissable moments.</em></h2>
+      <p>Find the part that makes people want the rest.</p>
+      <div class="hero-tags"><span>Strong hooks</span><span>Cliffhanger endings</span><span>Your final cut</span></div></div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="script-sheet"><div class="sheet-label">YOUR SCRIPT <span>↗</span></div>
+        <div class="script-lines"><i></i><i></i><i></i><i></i></div>
+        <div class="highlight-line"><span></span> A moment worth sharing.</div>
+        <div class="script-lines bottom-lines"><i></i><i></i></div></div>
+        <div class="cut-card"><div class="cut-heading"><span class="play-mark">▶</span><span>THE PROMO CUT</span><span>✦</span></div>
+        <div class="waveform">{bars}</div><div class="cut-labels"><span>HOOK</span><span>CLIFFHANGER ↗</span></div></div>
+        <span class="art-note">SCRIPT → SHORTLIST</span>
+      </div></section>''', unsafe_allow_html=True)
+
+
+def workflow_steps():
+    current = 3 if st.session_state.result and st.session_state.result["manifest"]["complete"] else (2 if st.session_state.episodes else 1)
+    steps = "".join(f'<div class="flow-step {"active" if number == current else "done" if number < current else ""}">'
+                    f'<span class="step-number">{"✓" if number < current else f"0{number}"}</span><span>{label}</span></div>'
+                    for number, label in [(1, "Upload a story"), (2, "Find the moments"), (3, "Make your picks")])
+    st.markdown(f'<div class="workflow-steps">{steps}</div>', unsafe_allow_html=True)
+
+
 def discover(settings):
     result = st.session_state.result
     if not result:
-        st.markdown("## Find your next promo")
-        st.caption("Upload your scripts. Find the best moments. Choose what to share.")
+        studio_intro()
+    workflow_steps()
     with st.expander("1 · Upload scripts" if not result else "Change scripts", expanded=not bool(result)):
         uploaded = st.file_uploader("TXT, JSON or ZIP", type=["txt", "json", "zip"], accept_multiple_files=True,
                                     key=f"uploads_{st.session_state.upload_epoch}", help="Scripts need timestamps. Up to 25 MB total.")
         files = [(file.name, file.getvalue()) for file in uploaded]
         signature = hashlib.sha256(json.dumps([(name, hashlib.sha256(body).hexdigest()) for name, body in files]).encode()).hexdigest() if files else None
         loaded = bool(signature and signature == st.session_state.get("loaded_upload"))
-        if st.button("Scripts loaded" if loaded else "Load scripts", disabled=not files or loaded, width="stretch"):
+        if st.button("Scripts loaded" if loaded else "Load scripts", disabled=not files or loaded, width="stretch", type="primary" if files and not loaded else "secondary"):
             st.session_state.attempted_upload = signature
             try:
                 with st.spinner("Loading scripts…"):
@@ -274,7 +303,7 @@ def discover(settings):
         st.caption(f"{len(episodes)} episodes ready · up to {top} promos · adjust length in Settings")
         return
     manifest = result["manifest"]
-    st.markdown("## Your promos")
+    st.markdown('<div class="section-heading"><span>THE SHORTLIST</span><h2>Your next great promos.</h2></div>', unsafe_allow_html=True)
     st.caption(f"{len(result['shortlist'])} picks · {manifest['episodes_processed']}/{manifest['input_count']} episodes analyzed")
     if result.get("provenance", {}).get("kind") == "recorded_synthetic_demo":
         st.caption("Demo: saved Gemini results on fictional scripts.")
@@ -299,7 +328,7 @@ def discover(settings):
 
 def review_panel():
     result = st.session_state.result
-    st.markdown("## Review & download")
+    st.markdown('<div class="section-heading"><span>THE EDITING ROOM</span><h2>Make the final call.</h2></div>', unsafe_allow_html=True)
     if not result or not candidate_catalog(result):
         st.info("Find promos or try the demo to start reviewing.")
         return
@@ -460,17 +489,20 @@ def main():
         st.session_state.setdefault(key, default)
     with st.container(key="app_header"):
         brand, settings_col, reset_col = st.columns([5, 1.5, 1.5], vertical_alignment="center")
-        brand.markdown('<div class="brand"><div class="brand-mark">P↗</div><h1>PromoPilot <em>AI</em></h1></div>', unsafe_allow_html=True)
+        brand.markdown('<div class="brand"><div class="brand-mark">▶</div><div><h1>PromoPilot <em>AI</em></h1><span class="brand-subtitle">A little spark. A bigger audience.</span></div></div>', unsafe_allow_html=True)
         with settings_col:
             settings = controls()
         reset_col.button("Start over", on_click=reset_workspace, width="stretch", help="Clears scripts, results, reviews and your entered key.")
     mode, _, model, max_calls, top, policy = settings
-    key = access_panel(mode)
-    settings = mode, key, model, max_calls, top, policy
-    # Accept sessions opened on an older deployment without invalid navigation values.
     if st.session_state.get("page") not in {"Find promos", "Review & download"}:
         st.session_state.page = "Find promos"
-    page = st.radio("Workspace", ["Find promos", "Review & download"], horizontal=True, label_visibility="collapsed", key="page")
+    with st.container(key="workspace_bar"):
+        nav, access = st.columns([3, 2], vertical_alignment="top")
+        with nav:
+            page = st.radio("Workspace", ["Find promos", "Review & download"], horizontal=True, label_visibility="collapsed", key="page")
+        with access:
+            key = access_panel(mode)
+    settings = mode, key, model, max_calls, top, policy
     if page == "Find promos":
         discover(settings)
     else:
