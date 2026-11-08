@@ -4,12 +4,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .config import Policy
-from .prompts import CRITIC_SCHEMA, CRITIC_VERSION, SELECTION_SCHEMA, VERSION, critic_prompt, selection_prompt
+from .prompts import CRITIC_SCHEMA, CRITIC_VERSION, SELECTION_SCHEMA, VERSION, critic_prompt, selection_prompt, retry_prompt
 from .providers import ProviderError, write_json
 from .selection import ValidationError, baseline_candidates, rank_candidates, validate_candidate, validate_scores, weighted_score
 
 
-def batches_for(episodes, batch_size=5, max_chars=110_000, policy=None):
+def batches_for(episodes, batch_size=5, max_chars=100_000, policy=None):
     policy = policy or Policy()
     batches, current = [], []
     for episode in episodes:
@@ -64,12 +64,13 @@ def run(episodes, output: Path, provider=None, top=10, batch_size=5, progress=pr
     reviewer = critic_provider or provider
     batches = [[e] for e in episodes] if baseline else batches_for(episodes, batch_size, policy=policy)
     coverage = {e.number: {"episode": e.number, "file": e.filename, "sha256": e.sha256,
-                           "beats": len(e.beats), "status": "not_processed", "candidate_count": 0} for e in episodes}
+                           "beats": len(e.beats), "status": "not_processed", "candidate_count": 0, "discovery_attempts": 0} for e in episodes}
     accepted, grounded_all, rejected, errors = [], [], [], []
     manifest = {"created_utc": datetime.now(timezone.utc).isoformat(), "prompt_version": VERSION,
                 "mode": "baseline" if baseline else provider.name, "model": "structural-baseline-v1" if baseline else provider.model,
                 "critic_model": None if baseline else reviewer.model,
                 "critic_version": None if baseline else CRITIC_VERSION,
+                "max_discovery_attempts_per_episode": 1 if baseline else 2,
                 "input_count": len(episodes), "batch_count": len(batches), "weights": policy.weights, "policy": policy.to_dict(),
                 "score_meaning": "Zero means unrated; structural comparison only." if baseline else "Editorial judgment, not measured CTR/install probability.",
                 "limitations": ["Script timestamps must be checked against the final video/audio.",
@@ -79,52 +80,72 @@ def run(episodes, output: Path, provider=None, top=10, batch_size=5, progress=pr
     write_json(output / "coverage.json", list(coverage.values()))
     for index, batch in enumerate(batches, 1):
         progress(f"Batch {index}/{len(batches)}: episodes {', '.join(str(e.number) for e in batch)}")
-        prefix = output / "raw" / f"batch-{index:03d}"
+        seen, feedback = set(), []
         try:
-            if baseline:
-                generated = baseline_candidates(batch[0], policy)
-                payload = {"candidates": generated, "mode": "structural-baseline-not-LLM"}
-            else:
-                payload = provider.generate(selection_prompt(batch, policy), SELECTION_SCHEMA, "discovery")
-                generated = payload.get("candidates")
-                if not isinstance(generated, list) or len(generated) > 20:
-                    raise ProviderError("Invalid candidates list or too many candidates; no truncation performed.")
-            write_json(prefix.with_suffix(".candidates.json"), payload)
-            grounded, seen = [], set()
-            for raw in generated:
-                try:
-                    if not baseline and isinstance(raw, dict):
-                        segments = raw.get("segments")
-                        if not isinstance(segments, list) or len(segments) != 1:
-                            raise ValidationError("Discovery requires one continuous legal cut.")
-                        segment = segments[0]
-                        if not isinstance(segment, dict):
-                            raise ValidationError("Malformed segment.")
-                        episode = next((e for e in batch if e.number == segment.get("episode")), None)
-                        start, end = segment.get("start_beat"), segment.get("end_beat")
-                        if episode is None or not isinstance(start, str) or end not in episode.legal_continuous_cuts(policy).get(start, []):
-                            raise ValidationError("Cut pair is not in the supplied legal-cuts map.")
-                        if raw.get("hook_beat") != start or raw.get("cliffhanger_beat") != end:
-                            raise ValidationError("Hook/ending evidence must match the selected legal boundaries.")
-                    candidate = validate_candidate(raw, batch, policy)
-                    if candidate['id'] in seen:
-                        raise ValidationError("Duplicate candidate cut.")
-                    seen.add(candidate['id'])
-                    grounded.append(candidate)
-                except ValidationError as exc:
-                    rejected.append({"batch": index, "stage": "grounding", "reason": str(exc), "candidate": raw})
-            grounded_all.extend(grounded)
-            if baseline or not grounded:
-                kept, bad = grounded, []
-            else:
-                review = reviewer.generate(critic_prompt(grounded, policy), CRITIC_SCHEMA, "critic")
-                write_json(prefix.with_suffix(".reviews.json"), review)
-                kept, bad = apply_reviews(grounded, review, policy)
-            rejected.extend(bad)
-            accepted.extend(kept)
-            for episode in batch:
-                count = sum(any(s["episode"] == episode.number for s in c["segments"]) for c in kept)
-                coverage[episode.number].update(status="baseline_processed" if baseline else "ai_processed", candidate_count=count)
+            for attempt in range(1, 2 if baseline else 3):
+                prefix = output / "raw" / (f"batch-{index:03d}" + ("-retry" if attempt == 2 else ""))
+                rejection_start = len(rejected)
+                for episode in batch:
+                    coverage[episode.number]["discovery_attempts"] = attempt
+                if attempt == 2:
+                    progress("Trying different cuts using feedback (final attempt).")
+                if baseline:
+                    generated = baseline_candidates(batch[0], policy)
+                    payload = {"candidates": generated, "mode": "structural-baseline-not-LLM"}
+                else:
+                    payload = provider.generate((retry_prompt(batch, feedback, policy) if attempt == 2 else selection_prompt(batch, policy)), SELECTION_SCHEMA, "discovery_retry" if attempt == 2 else "discovery")
+                    generated = payload.get("candidates")
+                    if not isinstance(generated, list) or len(generated) > 20:
+                        raise ProviderError("Invalid candidates list or too many candidates; no truncation performed.")
+                write_json(prefix.with_suffix(".candidates.json"), payload)
+                grounded = []
+                for raw in generated:
+                    try:
+                        if not baseline and isinstance(raw, dict):
+                            segments = raw.get("segments")
+                            if not isinstance(segments, list) or len(segments) != 1:
+                                raise ValidationError("Discovery requires one continuous legal cut.")
+                            segment = segments[0]
+                            if not isinstance(segment, dict):
+                                raise ValidationError("Malformed segment.")
+                            episode = next((e for e in batch if e.number == segment.get("episode")), None)
+                            start, end = segment.get("start_beat"), segment.get("end_beat")
+                            if episode is None or not isinstance(start, str) or end not in episode.legal_continuous_cuts(policy).get(start, []):
+                                raise ValidationError("Cut pair is not in the supplied legal-cuts map.")
+                            if raw.get("hook_beat") != start or raw.get("cliffhanger_beat") != end:
+                                raise ValidationError("Hook/ending evidence must match the selected legal boundaries.")
+                        candidate = validate_candidate(raw, batch, policy)
+                        if candidate['id'] in seen:
+                            raise ValidationError("Cut already proposed in this batch; a different cut is required.")
+                        seen.add(candidate['id'])
+                        grounded.append(candidate)
+                    except ValidationError as exc:
+                        rejected.append({"batch": index, "attempt": attempt, "stage": "grounding", "reason": str(exc), "candidate": raw})
+                grounded_all.extend(grounded)
+                if baseline or not grounded:
+                    kept, bad = grounded, []
+                else:
+                    review = reviewer.generate(critic_prompt(grounded, policy), CRITIC_SCHEMA, "critic_retry" if attempt == 2 else "critic")
+                    write_json(prefix.with_suffix(".reviews.json"), review)
+                    kept, bad = apply_reviews(grounded, review, policy)
+                rejected.extend({**r, "batch": index, "attempt": attempt} for r in bad)
+                accepted.extend(kept)
+                for episode in batch:
+                    count = sum(any(s["episode"] == episode.number for s in c["segments"]) for c in accepted)
+                    coverage[episode.number].update(status="baseline_processed" if baseline else "ai_processed", candidate_count=count)
+                pending = [e for e in batch if coverage[e.number]["candidate_count"] == 0 and e.legal_continuous_cuts(policy)]
+                if baseline or attempt == 2 or not pending:
+                    break
+                # Feedback is reference data, not instructions. Never send proposer
+                # scores or reasoning to the independent critic on either attempt.
+                lookup = {c["id"]: c for c in grounded}
+                feedback = [{"reason": r["reason"][:400],
+                             "cuts": [{k: seg[k] for k in ("episode", "start_beat", "end_beat")}
+                                      for seg in lookup.get(r.get("candidate_id"), {}).get("segments", [])]}
+                            for r in rejected[rejection_start:]]
+                if not feedback:
+                    feedback = [{"reason": "The initial search returned no candidate. Reconsider different legal cuts; do not fill a quota.", "cuts": []}]
+                batch = pending
         except ProviderError as exc:
             errors.append({"batch": index, "episodes": [e.number for e in batch], "error": str(exc),
                            "credential_issue": exc.credential_issue})

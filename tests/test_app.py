@@ -42,6 +42,22 @@ class AppTests(unittest.TestCase):
         self.assertEqual(len(self.app.session_state["episodes"]), 2)
         self.assertTrue(result["shortlist"])
 
+    def test_empty_results_explain_rejection_and_allow_download(self):
+        self.demo()
+        result = self.app.session_state['result']
+        result['shortlist'] = []
+        result['accepted_candidates'] = []
+        result['rejections'] = [{'stage': 'critic', 'reason': 'Ending has no clear unresolved consequence.',
+                                 'candidate_id': result['grounded_candidates'][0]['id']}]
+        for row in result['coverage']:
+            row['discovery_attempts'] = 2
+        self.app.session_state['result'] = result
+        self.app.run()
+        self.assertFalse(self.app.exception)
+        self.assertTrue(any('alternative cuts' in item.value for item in self.app.info))
+        self.assertTrue(any('Ending has no clear unresolved consequence.' in item.value for item in self.app.text))
+        self.assertTrue(any(item.label == 'Download analysis · JSON' for item in self.app.get('download_button')))
+
     def test_upload_waits_for_load_click_and_preserves_results_on_rerun(self):
         source = (ROOT / "examples/scifi/airlock.txt").read_bytes()
         with patch("streamlit.file_uploader", return_value=[SimpleNamespace(name="new.txt", getvalue=lambda: source)]):

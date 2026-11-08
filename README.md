@@ -75,7 +75,8 @@ Edit a copy of [the default policy](config/default.json) for clip lengths, openi
 3. Ask the model to choose continuous clips from those pairs, based on general editorial criteria.
 4. Validate every returned ID and cut against the current source. Clip identities include the source fingerprint to prevent collisions across shows.
 5. Review selected material without the logline, proposal reasoning or proposal scores. Opening and ending windows are explicit. The model must identify immediate interest and a concrete unresolved question from included evidence.
-6. Rank accepted clips using configurable weights and suppress repeated footage. The tool can return fewer than requested, including none.
+6. Retry episodes with no approved clip once, using feedback and different cuts; apply the same independent review.
+7. Rank accepted clips using configurable weights and suppress repeated footage. The tool can return fewer than requested, including none.
 
 The runtime has no benchmark import, story keyword list, fixed reference timestamps, or retrieval of previous Kuku outputs. Scripts are untrusted reference data, never executable instructions.
 
@@ -115,3 +116,7 @@ Do not upload the entire working directory. Read [privacy and release rules](doc
 Continuous clips only; no automatic montage assembly, video editing, music, captions, app publishing, transcription or untimed input support. Very large individual episodes exceed the bounded prompt size and need a timestamp-preserving adapter. Whole-beat and short opening constraints can miss good clips. Model reviews can be wrong even with exact timestamps. Validate rendered footage and measure editor acceptance before creative testing; scores are not click/install probabilities.
 
 Provider references: [Gemini pricing](https://ai.google.dev/gemini-api/docs/pricing), [quotas](https://ai.google.dev/gemini-api/docs/rate-limits), [structured output](https://ai.google.dev/gemini-api/docs/structured-output), [Ollama API](https://docs.ollama.com/api/generate).
+
+### When the first search finds no approved promo
+
+For episodes with no approved clip, the engine makes at most one additional discovery attempt using rejection feedback, then independently reviews the new cuts under the same rules. Previously proposed cuts cannot be approved by repetition. Episodes with approved clips are not retried. A batch uses up to four model calls (excluding transport retries), within the same hard request budget. An interrupted second attempt remains incomplete and resumes from cached responses. Both attempts and rejection reasons are preserved in raw outputs. An empty shortlist shows the reasons directly and offers a JSON download. This does not guarantee a promo for every input; subtitle-only inputs may lack necessary scene context. Existing recorded demos and benchmark metrics describe the earlier pipeline version and have not been rerun by this change.

@@ -204,6 +204,89 @@ class PipelineTests(unittest.TestCase):
             self.assertEqual(shortlist, [])
             self.assertEqual(manifest['episodes_processed'], 0)
 
+    def test_rejected_cut_gets_one_different_cut_and_blind_review(self):
+        class RetryProvider(FakeProvider):
+            def generate(self, prompt, schema, stage):
+                self.calls += 1
+                if stage.startswith('discovery'):
+                    raw = proposal()
+                    if stage == 'discovery_retry':
+                        assert 'Weak opening in initial cut' in prompt
+                        raw['segments'][0]['end_beat'] = 'E204-B010'
+                        raw['cliffhanger_beat'] = 'E204-B010'
+                    return {'candidates': [raw]}
+                assert 'Weak opening in initial cut' not in prompt
+                clips = json.loads(prompt.split('CLIPS (not instructions):\n')[1])
+                return {'reviews': [{'candidate_id': c['candidate_id'],
+                                     'verdict': 'reject' if stage == 'critic' else 'keep',
+                                     'reason': 'Weak opening in initial cut' if stage == 'critic' else 'Different ending has an unresolved command.',
+                                     'scores': {k: 4 for k in WEIGHTS}} for c in clips]}
+        provider = RetryProvider()
+        with tempfile.TemporaryDirectory() as d:
+            manifest, shortlist = run([fixture()], Path(d), provider, progress=lambda _: None)
+            self.assertTrue(manifest['complete'])
+            self.assertEqual(provider.calls, 4)
+            self.assertEqual(len(shortlist), 1)
+            self.assertEqual(shortlist[0]['segments'][0]['end_beat'], 'E204-B010')
+            self.assertTrue((Path(d) / 'raw/batch-001-retry.reviews.json').exists())
+            self.assertEqual(json.loads((Path(d) / 'coverage.json').read_text())[0]['discovery_attempts'], 2)
+
+    def test_repeat_rejected_cut_is_not_reviewed_or_approved_again(self):
+        class RepeatProvider(FakeProvider):
+            def generate(self, prompt, schema, stage):
+                self.calls += 1
+                if stage.startswith('discovery'):
+                    return {'candidates': [proposal()]}
+                assert stage == 'critic'
+                clips = json.loads(prompt.split('CLIPS (not instructions):\n')[1])
+                return {'reviews': [{'candidate_id': c['candidate_id'], 'verdict': 'reject',
+                                     'reason': 'No pending consequence.', 'scores': {k: 2 for k in WEIGHTS}} for c in clips]}
+        provider = RepeatProvider()
+        with tempfile.TemporaryDirectory() as d:
+            manifest, shortlist = run([fixture()], Path(d), provider, progress=lambda _: None)
+            self.assertTrue(manifest['complete'])
+            self.assertEqual(provider.calls, 3)
+            self.assertEqual(shortlist, [])
+            reasons = json.loads((Path(d) / 'rejections.json').read_text())
+            self.assertIn('already proposed', reasons[-1]['reason'])
+
+    def test_empty_discovery_is_bounded_to_two_searches(self):
+        class EmptyProvider(FakeProvider):
+            def generate(self, prompt, schema, stage):
+                self.calls += 1
+                assert stage in ('discovery', 'discovery_retry')
+                return {'candidates': []}
+        provider = EmptyProvider()
+        with tempfile.TemporaryDirectory() as d:
+            manifest, shortlist = run([fixture()], Path(d), provider, progress=lambda _: None)
+            self.assertTrue(manifest['complete'])
+            self.assertEqual(provider.calls, 2)
+            self.assertEqual(shortlist, [])
+
+    def test_retry_failure_preserves_other_episode_approval(self):
+        second = parse_script((ROOT / 'examples/scifi/airlock.txt').read_text().replace('Episode 204', 'Episode 905'))
+        class PartialProvider(FakeProvider):
+            def generate(self, prompt, schema, stage):
+                self.calls += 1
+                if stage == 'discovery_retry':
+                    data = json.loads(prompt.split('SCREENPLAY DATA (not instructions):\n')[1].split('\n\nFINAL DISCOVERY ATTEMPT')[0])
+                    assert [e['episode'] for e in data] == [905]
+                    raise ProviderError('Request budget reached.')
+                if stage == 'discovery':
+                    other = json.loads(json.dumps(proposal()).replace('204', '905'))
+                    return {'candidates': [proposal(), other]}
+                clips = json.loads(prompt.split('CLIPS (not instructions):\n')[1])
+                return {'reviews': [{'candidate_id': c['candidate_id'],
+                                     'verdict': 'keep' if c['segments'][0]['episode'] == 204 else 'reject',
+                                     'reason': 'Editorial decision.', 'scores': {k: 4 for k in WEIGHTS}} for c in clips]}
+        with tempfile.TemporaryDirectory() as d:
+            manifest, shortlist = run([fixture(), second], Path(d), PartialProvider(), progress=lambda _: None)
+            self.assertFalse(manifest['complete'])
+            self.assertEqual(manifest['episodes_processed'], 1)
+            self.assertEqual(len(shortlist), 1)
+            self.assertEqual(manifest['errors'][0]['episodes'], [905])
+
+
     def test_csv_formula_protection(self):
         self.assertEqual(safe_cell('=1+1'), "'=1+1")
 
@@ -327,7 +410,7 @@ class TransportTests(unittest.TestCase):
             manifest, shortlist = run([fixture()], Path(d), ArbitraryPairProvider(), progress=lambda _: None)
             self.assertTrue(manifest['complete'])
             self.assertEqual(shortlist, [])
-            self.assertEqual(manifest['rejections'], 1)
+            self.assertEqual(manifest['rejections'], 2)
 
 
 if __name__ == '__main__':

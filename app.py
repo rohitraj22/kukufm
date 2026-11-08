@@ -315,7 +315,22 @@ def discover(settings):
     if manifest["mode"] == "baseline":
         st.warning("Timing-only results. These clips have not been scored by AI.")
     if not result["shortlist"]:
-        st.info("No clips passed the checks. See More tools → Skipped clips for details.")
+        attempts = max((row.get("discovery_attempts", 1) for row in result["coverage"]), default=1)
+        if not manifest["complete"]:
+            st.info("No approved promos yet. Continue analysis to finish the pending checks.")
+        else:
+            st.info("No clips passed after checking alternative cuts." if attempts > 1 else "No clips passed the checks.")
+        rows = exclusion_audit(result)
+        if rows:
+            st.markdown("**Why these clips weren't selected**")
+            for row in rows[:4]:
+                st.text(row["reason"])
+            if len(rows) > 4:
+                st.caption("More tools → Skipped clips has the remaining reasons.")
+        elif manifest["complete"]:
+            st.caption("No candidate was proposed that met the current timing and story requirements. Try a fuller timed screenplay; subtitles can omit important scene context.")
+        st.download_button("Download analysis · JSON", json.dumps(export_bundle(result, st.session_state.reviews), indent=2, ensure_ascii=False).encode(),
+                           "promopilot-results.json", "application/json")
     else:
         download_panel(result)
         st.caption("Review a promo to keep it, reject it, or adjust its timing.")

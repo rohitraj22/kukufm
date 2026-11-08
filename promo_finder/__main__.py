@@ -35,7 +35,7 @@ def main():
         batches = batches_for(episodes, args.batch_size, policy=policy)
         if args.dry_run:
             print(json.dumps({"episodes": len(episodes), "beats": sum(len(e.beats) for e in episodes),
-                              "batches": len(batches), "planned_ai_calls_up_to": len(batches) * 2,
+                              "batches": len(batches), "planned_ai_calls_up_to": len(batches) * 4,
                               "policy": policy.to_dict(),
                               "approx_discovery_input_tokens_chars_div_4": sum(len(selection_prompt(b, policy)) for b in batches) // 4,
                               "note": "Token estimate only, excluding critic/output tokens. No network calls made."}, indent=2))
