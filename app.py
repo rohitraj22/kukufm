@@ -253,10 +253,17 @@ def discover(settings):
     result = st.session_state.result
     if not result:
         studio_intro()
+        if not st.session_state.episodes:
+            with st.container(key="demo_preview", border=True):
+                description, action = st.columns([3, 1], vertical_alignment="center")
+                description.markdown('<div class="demo-copy"><span>JUST EXPLORING?</span><h3>See a story become a promo.</h3><p>Fictional scripts · saved results · no key needed</p></div>', unsafe_allow_html=True)
+                action.button("Try a demo", on_click=load_demo, width="stretch")
     workflow_steps()
-    with st.expander("1 · Upload scripts" if not result else "Change scripts", expanded=not bool(result)):
+    with (st.container(key="upload_panel", border=True) if not result else st.expander("Change scripts")):
+        if not result:
+            st.markdown('<div class="upload-heading"><h3>Upload your screenplay</h3><p>Add a timed script or a ZIP of episodes.</p></div>', unsafe_allow_html=True)
         uploaded = st.file_uploader("TXT, JSON or ZIP", type=["txt", "json", "zip"], accept_multiple_files=True,
-                                    key=f"uploads_{st.session_state.upload_epoch}", help="Scripts need timestamps. Up to 25 MB total.")
+                                    key=f"uploads_{st.session_state.upload_epoch}", label_visibility="collapsed", help="Scripts need timestamps. Up to 25 MB total.")
         files = [(file.name, file.getvalue()) for file in uploaded]
         signature = hashlib.sha256(json.dumps([(name, hashlib.sha256(body).hexdigest()) for name, body in files]).encode()).hexdigest() if files else None
         loaded = bool(signature and signature == st.session_state.get("loaded_upload"))
@@ -500,13 +507,8 @@ def main():
     for key, default in {"episodes": [], "result": None, "reviews": {}, "workspace_label": "", "upload_epoch": 0}.items():
         st.session_state.setdefault(key, default)
     with st.container(key="app_header"):
-        brand, demo_col, settings_col, reset_col = st.columns([4.5, 1.5, 1.5, 1.5], vertical_alignment="center")
+        brand, settings_col, reset_col = st.columns([5, 1.3, 1.3], vertical_alignment="center")
         brand.markdown('<div class="brand"><div class="brand-mark">▶</div><div><h1>PromoPilot <em>AI</em></h1><span class="brand-subtitle">A little spark. A bigger audience.</span></div></div>', unsafe_allow_html=True)
-        with demo_col.popover("Sample demo", width="stretch"):
-            st.caption("Preview sample promos using fictional scripts. No upload or API key needed.")
-            if st.session_state.episodes:
-                st.caption("Opening the demo replaces your current workspace.")
-            st.button("Try a demo", on_click=load_demo, width="stretch")
         with settings_col:
             settings = controls()
         reset_col.button("Start over", on_click=reset_workspace, width="stretch", help="Clears scripts, results, reviews and your entered key.")
