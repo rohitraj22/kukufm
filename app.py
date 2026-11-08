@@ -37,7 +37,7 @@ def reset_workspace():
             del st.session_state[key]
     # File-upload widget values cannot be assigned. A new identity removes the
     # browser's old file chips and releases the old widget on the next render.
-    st.session_state.update(upload_epoch=epoch, visitor_key="", page="Discover")
+    st.session_state.update(upload_epoch=epoch, visitor_key="", page="Find promos")
 
 
 def set_workspace(episodes, result=None, label="Uploaded screenplay"):
@@ -89,49 +89,42 @@ def retry_shared_key():
 
 
 def controls():
-    with st.sidebar:
-        st.markdown("### Your workspace")
-        st.caption("From screenplay to an editor-ready shortlist.")
-        mode = st.radio("Analysis mode", ["Gemini AI", "Timing-only baseline"], key="mode")
-        st.caption("The baseline checks cut boundaries; it does not assess narrative quality.")
-        key, model, max_calls = "", DEFAULT_MODEL, 30
-        if mode == "Gemini AI":
-            shared = bool(configured_key())
-            unavailable = st.session_state.get("shared_key_unavailable", False)
-            if shared and not unavailable:
-                st.success("Shared Gemini access is ready. No key needed to start.")
-            elif unavailable:
-                st.warning("Shared Gemini access hit a quota or key restriction. Enter your own key to continue, "
-                           "or retry shared access later. Completed work is saved in this session.")
-                st.button("Retry shared access", on_click=retry_shared_key)
-            with st.expander("Use your own Gemini API key", expanded=unavailable or not shared):
-                key = st.text_input("Gemini API key", type="password", key="visitor_key",
-                                    placeholder="Your key overrides shared access for this session")
-                st.caption("Stored only in your session. Never added to server settings or logs.")
-            if key.strip():
-                st.caption("Using your key for new requests.")
-            with st.expander("Model & request budget"):
-                model = st.text_input("Model ID", DEFAULT_MODEL, key="model_id")
-                max_calls = st.number_input("Maximum API requests per click", 2, 60, 30, step=1, key="call_limit")
-                st.caption("Discovery and review share this cap. Free quotas depend on your Google account. No automatic model fallback.")
-        top = st.slider("Shortlist size", 1, 30, 10, key="top_count")
-        duration = st.slider("Clip duration · seconds", 10, 90, (20, 60), key="duration_range")
-        with st.expander("Editorial rubric"):
-            st.caption("Weights must total 100. Used for new analyses; recorded results retain their original rubric.")
-            weights = {name: st.number_input(LABELS[name], 0, 100, Policy().weights[name], key="weight_" + name) for name in DIMENSIONS}
-            per_episode = st.number_input("Candidates per episode", 1, 4, 2, key="per_episode")
+    with st.popover("Settings", width="stretch"):
+        top = st.slider("Number of promos", 1, 30, 10, key="top_count")
+        duration = st.slider("Clip length (seconds)", 10, 90, (20, 60), key="duration_range")
+        with st.expander("Advanced settings"):
+            mode = st.radio("Analysis mode", ["Gemini AI", "Timing-only baseline"], key="mode")
+            st.caption("Timing-only checks clip boundaries without AI scoring.")
+            model = st.text_input("Model ID", DEFAULT_MODEL, key="model_id")
+            max_calls = st.number_input("Request limit per run", 2, 60, 30, step=1, key="call_limit")
             audience = st.text_area("Target audience", Policy().audience, max_chars=500, key="audience")
-        try:
-            policy = Policy(min_duration_ms=duration[0] * 1000, max_duration_ms=duration[1] * 1000,
-                            weights=weights, candidates_per_episode=per_episode, audience=audience)
-        except ValueError as exc:
-            st.error(str(exc))
-            policy = None
-        st.divider()
-        st.caption("Uploads and review notes belong to this session. Clear your workspace to remove its temporary files, results, and entered key.")
-        st.button("Clear workspace", on_click=reset_workspace, width="stretch")
-        st.caption("PromoPilot AI · v0.3 · Script-to-promo intelligence")
-    return mode, key, model, max_calls, top, policy
+            per_episode = st.number_input("Candidates per episode", 1, 4, 2, key="per_episode")
+            st.caption("Scoring weights must total 100.")
+            weights = {name: st.number_input(LABELS[name], 0, 100, Policy().weights[name], key="weight_" + name) for name in DIMENSIONS}
+    try:
+        policy = Policy(min_duration_ms=duration[0] * 1000, max_duration_ms=duration[1] * 1000,
+                        weights=weights, candidates_per_episode=per_episode, audience=audience)
+    except ValueError as exc:
+        st.error(str(exc))
+        policy = None
+    return mode, "", model, max_calls, top, policy
+
+
+def access_panel(mode):
+    unavailable = st.session_state.get("shared_key_unavailable", False)
+    needs_key = mode == "Gemini AI" and (unavailable or not configured_key()) and not st.session_state.get("visitor_key", "").strip()
+    with st.expander("Add a Gemini key to continue" if needs_key else "Gemini access · optional", expanded=needs_key):
+        if unavailable:
+            st.warning("Shared access is unavailable. Use your own key or retry later. Your progress is saved.")
+            st.button("Retry shared access", on_click=retry_shared_key)
+        key = st.text_input("Gemini API key", type="password", key="visitor_key", placeholder="Optional when shared access is available")
+        st.caption("Your key stays in this session. Leave blank to use shared access.")
+    return key
+
+
+def open_review(candidate_id):
+    st.session_state.candidate_selected = candidate_id
+    st.session_state.page = "Review & download"
 
 
 def card(candidate, baseline=False, review=None):
@@ -150,50 +143,44 @@ def card(candidate, baseline=False, review=None):
 
 
 def show_evidence(candidate, weights, baseline=False):
-    if candidate.get("scores") is not None:
-        st.dataframe([{"Criterion": LABELS[name], "Score / 5": candidate["scores"][name], "Weight %": weights[name],
-                       "Contribution / 100": round(candidate["scores"][name] * weights[name] / 5, 1)} for name in DIMENSIONS],
-                     hide_index=True, width="stretch")
-        st.caption("Zero means unrated in baseline mode." if baseline else "Weighted editorial judgment; not measured click or install probability.")
-    st.markdown("**Opening evidence**")
+    st.markdown("**Opening hook**")
     st.text(candidate["hook_source"]["text"])
-    st.caption(candidate["hook"])
-    st.markdown("**Ending evidence**")
+    st.markdown("**Ending**")
     st.text(candidate["cliffhanger_source"]["text"])
-    st.caption(candidate["cliffhanger"])
-    if candidate.get("critic"):
-        st.markdown("**AI reviewer’s reasoning**")
-        st.text(candidate["critic"]["reason"])
-    else:
-        st.text(candidate["why_it_works"])
-    if candidate.get("rank_reason"):
-        st.caption(candidate["rank_reason"])
-    if candidate.get("risks"):
-        st.markdown("**Review flags**")
-        for risk in candidate["risks"]:
-            st.text("• " + risk)
-    with st.expander("Included source beats"):
+    with st.expander("Why this clip works"):
+        st.write(candidate.get("critic", {}).get("reason") or candidate["why_it_works"])
+        st.caption(candidate["hook"])
+        st.caption(candidate["cliffhanger"])
+        if candidate.get("rank_reason"):
+            st.caption(candidate["rank_reason"])
+        for risk in candidate.get("risks", []):
+            st.write("• " + risk)
+    with st.expander("Scores & source details"):
+        if candidate.get("scores") is not None:
+            st.dataframe([{"Criterion": LABELS[name], "Score / 5": candidate["scores"][name], "Weight %": weights[name]}
+                          for name in DIMENSIONS], hide_index=True, width="stretch")
+        st.caption("Unrated timing check." if baseline else "AI judgment, not a prediction of clicks or installs.")
         for segment in candidate["segments"]:
-            st.caption(f"Episode {segment['episode']} · source fingerprint {segment['source_sha256'][:12]}")
-            st.dataframe([{"Start": format_time(b["start_ms"]), "End": format_time(b["end_ms"]), "Type": b["kind"],
-                           "Speaker / label": b["label"], "Text": b["text"], "Whole beat": b["fully_included"]}
-                          for b in segment["beats"]], hide_index=True, width="stretch")
-    st.caption(candidate["validation"] + " Final-media timing still needs verification.")
+            st.dataframe([{"Start": format_time(b["start_ms"]), "End": format_time(b["end_ms"]),
+                           "Speaker": b["label"], "Text": b["text"]} for b in segment["beats"]],
+                         hide_index=True, width="stretch")
+            st.caption(f"Source fingerprint: {segment['source_sha256']}")
+        st.caption(candidate["validation"] + " Check timing against the final audio or video.")
 
 
 def download_panel(result):
     reviews = st.session_state.reviews
-    bundle = export_bundle(result, reviews)
     with st.container(key="exports_panel"):
-        columns = st.columns(3)
-    columns[0].download_button("↓ Full results · JSON", json.dumps(bundle, indent=2, ensure_ascii=False).encode(),
-                               "promopilot-results.json", "application/json", width="stretch")
-    columns[1].download_button("↓ Shortlist + reviews · CSV", export_csv(result, reviews),
-                               "promopilot-shortlist.csv", "text/csv", width="stretch")
-    columns[2].download_button("↓ Editor-accepted cuts · CSV", export_csv(result, reviews, accepted_only=True),
+        left, right = st.columns(2)
+        left.download_button("Download promos · CSV", export_csv(result, reviews),
+                             "promopilot-shortlist.csv", "text/csv", width="stretch")
+        with right.popover("More downloads", width="stretch"):
+            st.download_button("Kept clips · CSV", export_csv(result, reviews, accepted_only=True),
                                "promopilot-approved.csv", "text/csv", width="stretch",
                                disabled=not any(r["decision"] == "Accepted" for r in reviews.values()))
-    st.caption("Exports include exact source timestamps, evidence, validation and review notes. Files derived from private scripts must remain private.")
+            st.download_button("Full results · JSON", json.dumps(export_bundle(result, reviews), indent=2, ensure_ascii=False).encode(),
+                               "promopilot-results.json", "application/json", width="stretch")
+            st.caption("Keep downloads from private scripts private.")
 
 
 def analyze(settings):
@@ -203,7 +190,7 @@ def analyze(settings):
         if mode == "Gemini AI":
             key, key_source = active_credentials(entered_key)
             if not key:
-                st.error("Enter a Gemini API key in the sidebar, or choose the timing-only baseline.")
+                st.error("Add a Gemini key in Gemini access above to continue.")
                 return
             batches_for(episodes, policy=policy)
         signature = hashlib.sha256(json.dumps({"sources": [e.sha256 for e in episodes], "policy": policy.to_dict(),
@@ -234,128 +221,96 @@ def analyze(settings):
 
 
 def discover(settings):
-    st.markdown("## Find the moment that makes them stay.")
-    st.caption("Upload timed scripts. Discover strong openings, unresolved endings, and clips a new viewer can follow.")
-    with st.container(border=True, key="upload_panel"):
-        upload_column, demo_column = st.columns([2, 1], gap="large")
-        with upload_column:
-            st.markdown("#### Upload your screenplay")
-            uploaded = st.file_uploader("TXT, JSON or ZIP of episodes", type=["txt", "json", "zip"], accept_multiple_files=True,
-                                        key=f"uploads_{st.session_state.upload_epoch}", help="Timed TXT or normalized JSON. 25 MB total, 200 episodes. No estimated timestamps.")
-            files = [(file.name, file.getvalue()) for file in uploaded]
-            signature = hashlib.sha256(json.dumps([
-                (name, hashlib.sha256(body).hexdigest()) for name, body in files
-            ]).encode()).hexdigest() if files else None
-            loaded = bool(signature and signature == st.session_state.get("loaded_upload"))
-            retry = st.button("Scripts loaded" if loaded else "Load uploaded scripts",
-                              disabled=not files or loaded, width="stretch")
-            # Upload stages files; only this explicit action replaces the workspace.
-            if files and retry:
-                st.session_state.attempted_upload = signature
-                try:
-                    with st.spinner("Reading screenplay files…"):
-                        episodes, ignored = ingest_uploads(files)
-                    set_workspace(episodes, label="Uploaded screenplay")
-                    st.session_state.update(attempted_upload=signature, loaded_upload=signature,
-                        notice=f"Loaded {len(episodes)} {'episode' if len(episodes) == 1 else 'episodes'} · {sum(len(e.beats) for e in episodes):,} timed beats. "
-                               f"{len(ignored)} metadata or non-script files skipped.")
-                    st.rerun()
-                except InputError as exc:
-                    st.session_state.upload_error = str(exc)
-            if files and signature == st.session_state.get("attempted_upload") and st.session_state.get("upload_error"):
-                st.error(st.session_state.upload_error)
-            elif files and not loaded:
-                st.info(f"{len(files)} file(s) selected. Click Load uploaded scripts to parse and validate them.")
-            elif st.session_state.get("notice"):
-                st.success(st.session_state.notice)
-            elif not files:
-                st.caption("Select files, click Load uploaded scripts, then choose Analyze loaded scripts.")
-            if st.session_state.episodes and (not files or signature == st.session_state.get("loaded_upload")):
-                mode, entered_key, _, _, _, policy = settings
-                if mode == "Gemini AI":
-                    key_ready, source = active_credentials(entered_key)
-                    if source == "unavailable":
-                        st.warning("Shared Gemini access is currently unavailable. Open the sidebar (»), enter your own "
-                                   "Gemini API key, then click Run / resume analysis. Completed responses are reused.")
-                    elif not key_ready:
-                        st.info("Open the sidebar (») and enter a Gemini API key. Shared access has not been configured yet.")
-                    elif source == "shared":
-                        st.caption("Using shared Gemini access — no personal API key needed.")
-                    st.caption("Analyze sends the loaded scripts to Google’s Gemini API. Use authorized inputs only.")
-                if st.button("Analyze loaded scripts" if not st.session_state.result else "Run / resume analysis",
-                             type="primary", disabled=policy is None, width="stretch"):
-                    analyze(settings)
-        with demo_column:
-            st.markdown("#### Explore a real AI run")
-            st.write("Try two original fictional scripts with recorded Gemini results. No API key needed.")
-            if st.button("Load fictional demo", type="primary", width="stretch"):
-                load_demo()
+    result = st.session_state.result
+    if not result:
+        st.markdown("## Find your next promo")
+        st.caption("Upload your scripts. Find the best moments. Choose what to share.")
+    with st.expander("1 · Upload scripts" if not result else "Change scripts", expanded=not bool(result)):
+        uploaded = st.file_uploader("TXT, JSON or ZIP", type=["txt", "json", "zip"], accept_multiple_files=True,
+                                    key=f"uploads_{st.session_state.upload_epoch}", help="Scripts need timestamps. Up to 25 MB total.")
+        files = [(file.name, file.getvalue()) for file in uploaded]
+        signature = hashlib.sha256(json.dumps([(name, hashlib.sha256(body).hexdigest()) for name, body in files]).encode()).hexdigest() if files else None
+        loaded = bool(signature and signature == st.session_state.get("loaded_upload"))
+        if st.button("Scripts loaded" if loaded else "Load scripts", disabled=not files or loaded, width="stretch"):
+            st.session_state.attempted_upload = signature
+            try:
+                with st.spinner("Loading scripts…"):
+                    episodes, ignored = ingest_uploads(files)
+                set_workspace(episodes, label="Uploaded screenplay")
+                st.session_state.update(attempted_upload=signature, loaded_upload=signature,
+                    notice=f"Loaded {len(episodes)} {'episode' if len(episodes) == 1 else 'episodes'}.",
+                    upload_skipped=len(ignored))
                 st.rerun()
-            with st.expander("Download sample inputs"):
-                stream = io.BytesIO()
-                with zipfile.ZipFile(stream, "w", zipfile.ZIP_DEFLATED) as archive:
-                    archive.writestr("airlock.txt", (ROOT / "examples/scifi/airlock.txt").read_bytes())
-                    archive.writestr("scoreboard.json", (ROOT / "examples/sports/scoreboard.json").read_bytes())
-                st.download_button("Fictional screenplay ZIP", stream.getvalue(), "fictional-screenplays.zip", "application/zip")
-                st.caption("The TXT adapter expects explicit episode headers and timed speaker/action blocks. Untimed screenplays need a separate alignment step.")
+            except InputError as exc:
+                st.session_state.upload_error = str(exc)
+        if files and signature == st.session_state.get("attempted_upload") and st.session_state.get("upload_error"):
+            st.error(st.session_state.upload_error)
+        elif files and not loaded:
+            st.caption("Files selected. Click Load scripts to continue.")
+        elif st.session_state.get("notice"):
+            st.success(st.session_state.notice)
+            if st.session_state.get("upload_skipped"):
+                st.caption(f"Skipped {st.session_state.upload_skipped} non-script files.")
+        if not result:
+            st.button("Try a demo", on_click=load_demo, width="stretch")
+            st.caption("Original fictional scripts · saved AI results · no key needed")
     if files and signature != st.session_state.get("loaded_upload"):
         return
     episodes = st.session_state.episodes
     if not episodes:
-        st.markdown('<div class="empty"><span>01 · UPLOAD</span><span>02 · DISCOVER & CHECK</span><span>03 · REVIEW & EXPORT</span></div>', unsafe_allow_html=True)
-        st.info("Kuku’s private screenplay pack is not bundled with this app. Use your own authorized inputs, or the fictional demo.")
         return
-    st.caption(st.session_state.workspace_label)
-    result = st.session_state.result
+    mode, entered_key, _, _, top, policy = settings
+    key_ready, source = active_credentials(entered_key)
     if not result:
-        left, right = st.columns(2)
-        left.metric("Episodes ready", len(episodes))
-        right.metric("Timed beats", sum(len(e.beats) for e in episodes))
-        st.info("Ready to analyze. The Episode timeline tab lets you inspect the parsed source first.")
+        st.markdown("### 2 · Find promos")
+    if mode == "Gemini AI":
+        if not key_ready:
+            st.warning("Add your Gemini key in Gemini access above to continue.")
+        st.caption("Uses Gemini to analyze your scripts. Only upload content you’re allowed to share with Google.")
+    button = "Find promos" if not result else ("Continue analysis" if not result["manifest"]["complete"] else "Find promos again")
+    if st.button(button, type="primary", disabled=policy is None or (mode == "Gemini AI" and not key_ready)):
+        analyze(settings)
+    if not result:
+        st.caption(f"{len(episodes)} episodes ready · up to {top} promos · adjust length in Settings")
         return
     manifest = result["manifest"]
+    st.markdown("## Your promos")
+    st.caption(f"{len(result['shortlist'])} picks · {manifest['episodes_processed']}/{manifest['input_count']} episodes analyzed")
     if result.get("provenance", {}).get("kind") == "recorded_synthetic_demo":
-        st.info("Recorded Gemini output on original fictional scripts. Includes deliberately constructed review challenges, identified in the audit. Loading this demo makes no API calls.")
+        st.caption("Demo: saved Gemini results on fictional scripts.")
     if not manifest["complete"]:
-        st.warning(f"Partial run: {manifest['episodes_processed']}/{manifest['input_count']} episodes processed. Completed responses are cached within this session; run again to resume.")
-        for error in manifest["errors"]:
-            st.error(error["error"])
+        st.warning("Some episodes are unfinished. Continue analysis to resume.")
+        with st.expander("Analysis details", expanded=not bool(result["shortlist"])):
+            for error in manifest["errors"]:
+                st.error(error["error"])
     if manifest["mode"] == "baseline":
-        st.warning("Timing-only baseline. These windows are unrated and have not passed an AI quality review.")
-    with st.container(key="run_metrics"):
-        columns = st.columns(4)
-    for column, (label, value) in zip(columns, [("Episodes processed", f"{manifest['episodes_processed']}/{manifest['input_count']}"),
-                                               ("Grounded candidates", manifest["grounded_candidates"]),
-                                               ("Passed review" if manifest["mode"] != "baseline" else "Unrated windows", manifest["accepted_candidates"]),
-                                               ("Shortlisted", len(result["shortlist"]))]):
-        column.metric(label, value)
-    st.markdown("### Top promo recommendations")
-    st.caption(f"{manifest['model']} · {manifest['policy']['min_duration_ms']/1000:g}–{manifest['policy']['max_duration_ms']/1000:g}s · Full opening evidence within {manifest['policy']['hook_window_ms']/1000:g}s")
+        st.warning("Timing-only results. These clips have not been scored by AI.")
     if not result["shortlist"]:
-        st.info("No candidates met the current checks. Inspect Why excluded, review the source, or revise the rubric for a new run.")
+        st.info("No clips passed the checks. See More tools → Skipped clips for details.")
+    else:
+        download_panel(result)
+        st.caption("Review a promo to keep it, reject it, or adjust its timing.")
     for candidate in result["shortlist"]:
         card(candidate, manifest["mode"] == "baseline", st.session_state.reviews.get(candidate["id"]))
-        with st.expander("Why this clip? · " + candidate["title"]):
+        st.button("Review promo", key="review_open_" + candidate["id"], on_click=open_review, args=(candidate["id"],))
+        with st.expander("View script · " + candidate["title"]):
             show_evidence(candidate, manifest["weights"], manifest["mode"] == "baseline")
-    st.divider()
-    download_panel(result)
 
 
 def review_panel():
     result = st.session_state.result
-    st.markdown("## Review with the source in view.")
-    st.caption("Compare competing moments, adjust exact cut boundaries, and capture your editorial decision.")
+    st.markdown("## Review & download")
     if not result or not candidate_catalog(result):
-        st.info("Load the fictional demo or analyze your scripts to start reviewing.")
+        st.info("Find promos or try the demo to start reviewing.")
         return
     catalog = candidate_catalog(result)
     ids = list(dict.fromkeys([c["id"] for c in result["shortlist"]] + list(catalog)))
-    label = lambda cid: f"{catalog[cid]['title']} · {cid[-6:]}"
+    label = lambda cid: f"{catalog[cid]['title']} · Episode {catalog[cid]['segments'][0]['episode']}"
     cid = st.selectbox("Clip to review", ids, format_func=label, key="candidate_selected")
     candidate = catalog[cid]
     approved = {c["id"] for c in result["accepted_candidates"]}
     if cid not in approved:
-        st.warning("This proposal did not pass or complete AI review. An editor can still inspect it and record a separate decision.")
+        st.warning("This clip has not passed AI review. Check it before keeping it.")
     baseline = result["manifest"]["mode"] == "baseline"
     if st.checkbox("Compare with another clip", key="compare_enabled"):
         alternatives = [other for other in ids if other != cid]
@@ -376,21 +331,23 @@ def review_panel():
     effective = current.get("effective_candidate", candidate)
     segment = effective["segments"][0]
     policy = Policy(**result["manifest"]["policy"])
-    st.markdown("### Editor decision")
-    st.caption("Edits must match legal source boundaries and preserve full dialogue. A changed cut loses the original AI score and rationale; your decision is stored separately.")
+    st.markdown("### Your decision")
     with st.form("review_form_" + cid):
-        columns = st.columns(2)
-        start = columns[0].text_input("Start timestamp", segment["start"], key="edit_start_" + cid)
-        end = columns[1].text_input("End timestamp", segment["end"], key="edit_end_" + cid)
-        decision = st.radio("Decision", DECISIONS, index=DECISIONS.index(current.get("decision", "Pending")), horizontal=True, key="edit_decision_" + cid)
-        reason = st.selectbox("Feedback reason", FEEDBACK_REASONS, index=FEEDBACK_REASONS.index(current.get("feedback_reason", "No issue")), key="edit_reason_" + cid)
-        notes = st.text_area("Editor notes", current.get("notes", ""), max_chars=3000, key="edit_notes_" + cid,
-                             placeholder="What makes this work—or what did the model miss?")
-        save = st.form_submit_button("Save editor review", type="primary")
+        decision = st.radio("Decision", DECISIONS, index=DECISIONS.index(current.get("decision", "Pending")), horizontal=True,
+                            format_func=lambda value: {"Pending": "Not reviewed", "Accepted": "Keep", "Rejected": "Reject"}[value], key="edit_decision_" + cid)
+        with st.expander("Adjust timing or add a note"):
+            columns = st.columns(2)
+            start = columns[0].text_input("Start", segment["start"], key="edit_start_" + cid)
+            end = columns[1].text_input("End", segment["end"], key="edit_end_" + cid)
+            st.caption("Use exact script boundaries. Edited clips need a fresh quality check.")
+            reason = st.selectbox("Reason", FEEDBACK_REASONS, index=FEEDBACK_REASONS.index(current.get("feedback_reason", "No issue")), key="edit_reason_" + cid)
+            notes = st.text_area("Notes", current.get("notes", ""), max_chars=3000, key="edit_notes_" + cid,
+                                 placeholder="Add a reason if rejecting this promo.")
+        save = st.form_submit_button("Save decision", type="primary")
     if save:
         try:
             st.session_state.reviews[cid] = review_candidate(candidate, st.session_state.episodes, policy, start, end, decision, reason, notes)
-            st.success("Review saved to this session. Download the results to keep it.")
+            st.success("Decision saved. Download your promos to keep a copy.")
             current = st.session_state.reviews[cid]
         except (InputError, ValidationError) as exc:
             st.error(str(exc))
@@ -405,8 +362,7 @@ def review_panel():
 
 
 def exclusion_panel():
-    st.markdown("## Why wasn’t this clip selected?")
-    st.caption("See the recorded reason at each stage. An invalid cut, an AI rejection, and a ranking omission are different outcomes.")
+    st.markdown("### Skipped clips")
     result = st.session_state.result
     if not result:
         st.info("Analyze a screenplay or load the fictional demo to inspect decisions.")
@@ -440,7 +396,7 @@ def exclusion_panel():
 
 
 def timeline_panel():
-    st.markdown("## Every recommendation traces to the source.")
+    st.markdown("### Script timeline")
     episodes = st.session_state.episodes
     if not episodes:
         st.info("Load scripts to inspect their episode timelines.")
@@ -498,24 +454,43 @@ def benchmark_panel():
 
 
 def main():
-    st.set_page_config(page_title="PromoPilot AI", page_icon="🎬", layout="wide", initial_sidebar_state="auto")
+    st.set_page_config(page_title="PromoPilot AI", page_icon="🎬", layout="wide")
     st.markdown("<style>" + (ROOT / "web/style.css").read_text() + "</style>", unsafe_allow_html=True)
     for key, default in {"episodes": [], "result": None, "reviews": {}, "workspace_label": "", "upload_epoch": 0}.items():
         st.session_state.setdefault(key, default)
-    settings = controls()
-    st.markdown('<header class="brand"><div class="brand-mark">P<span>↗</span></div><div><h1>PromoPilot <em>AI</em></h1><p>Script-to-promo intelligence</p></div><span class="brand-tag">EDITOR WORKSPACE</span></header>', unsafe_allow_html=True)
-    tab = st.radio("Workspace", ["Discover", "Review & compare", "Why excluded", "Episode timeline", "Benchmark"], horizontal=True, label_visibility="collapsed", key="page")
-    st.divider()
-    if tab == "Discover":
+    with st.container(key="app_header"):
+        brand, settings_col, reset_col = st.columns([5, 1.5, 1.5], vertical_alignment="center")
+        brand.markdown('<div class="brand"><div class="brand-mark">P↗</div><h1>PromoPilot <em>AI</em></h1></div>', unsafe_allow_html=True)
+        with settings_col:
+            settings = controls()
+        reset_col.button("Start over", on_click=reset_workspace, width="stretch", help="Clears scripts, results, reviews and your entered key.")
+    mode, _, model, max_calls, top, policy = settings
+    key = access_panel(mode)
+    settings = mode, key, model, max_calls, top, policy
+    # Accept sessions opened on an older deployment without invalid navigation values.
+    if st.session_state.get("page") not in {"Find promos", "Review & download"}:
+        st.session_state.page = "Find promos"
+    page = st.radio("Workspace", ["Find promos", "Review & download"], horizontal=True, label_visibility="collapsed", key="page")
+    if page == "Find promos":
         discover(settings)
-    elif tab == "Review & compare":
-        review_panel()
-    elif tab == "Why excluded":
-        exclusion_panel()
-    elif tab == "Episode timeline":
-        timeline_panel()
     else:
-        benchmark_panel()
+        review_panel()
+    st.divider()
+    with st.expander("More tools"):
+        tool = st.selectbox("Open a tool", ["Choose a tool", "Script timeline", "Skipped clips", "Benchmark", "Sample files"], key="more_tool")
+        if tool == "Script timeline":
+            timeline_panel()
+        elif tool == "Skipped clips":
+            exclusion_panel()
+        elif tool == "Benchmark":
+            benchmark_panel()
+        elif tool == "Sample files":
+            stream = io.BytesIO()
+            with zipfile.ZipFile(stream, "w", zipfile.ZIP_DEFLATED) as archive:
+                archive.writestr("airlock.txt", (ROOT / "examples/scifi/airlock.txt").read_bytes())
+                archive.writestr("scoreboard.json", (ROOT / "examples/sports/scoreboard.json").read_bytes())
+            st.download_button("Download sample ZIP", stream.getvalue(), "fictional-screenplays.zip", "application/zip")
+            st.caption("Original fictional scripts. Kuku’s private screenplay pack is not included.")
 
 
 if __name__ == "__main__":

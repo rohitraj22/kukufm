@@ -23,7 +23,7 @@ The dark editor workspace supports:
 - A stage-by-stage exclusion audit, including actual reviewer rejections, overlapping alternatives and unfinished reviews.
 - JSON results, CSV shortlists with review decisions, and a CSV containing only editor-accepted cuts.
 
-**Load fictional demo** needs no key. It replays real Gemini results on two independently authored examples, including explicitly labeled, deliberately constructed review challenges. It makes no API calls and contains no Kuku content. The benchmark page shows only aggregate private-run metrics. Session-owned uploads, results, notes and temporary caches clear with **Clear workspace**; export reviews before leaving.
+**Try a demo** needs no key. It replays real Gemini results on two independently authored examples, including explicitly labeled, deliberately constructed review challenges. It makes no API calls and contains no Kuku content. The benchmark page shows only aggregate private-run metrics. Session-owned uploads, results, notes and temporary caches clear with **Start over**; export reviews before leaving.
 
 The package is prepared for **free Streamlit Community Cloud hosting**. See [deployment instructions](docs/HOSTING.md) and the [three-minute walkthrough](docs/DEMO_WALKTHROUGH.md). Nothing is deployed by these setup commands. Publish only the clean allowlisted source ZIP, never the original workspace.
 

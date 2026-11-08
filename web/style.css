@@ -1,10 +1,10 @@
 :root { --teal: #37cfb0; --muted: #9aa6af; }
 .stApp { background: #0b1014; }
-.block-container { max-width: 1240px; padding-top: 2.5rem; padding-bottom: 4rem; container-type:inline-size; }
+.block-container { max-width: 1080px; padding-top: 4rem; padding-bottom: 4rem; container-type:inline-size; }
 [data-testid="stSidebar"] { background: #11191e; border-right: 1px solid #253038; }
 h1, h2, h3, h4 { letter-spacing: -.03em; }
 h2 { font-size: 2rem !important; font-weight: 600 !important; }
-.brand { display:flex; align-items:center; gap:16px; margin:0 0 2rem; }
+.brand { display:flex; align-items:center; gap:16px; margin:0; }
 .brand-mark { width:48px; height:48px; border:1px solid #2b7666; color:var(--teal); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:650; }
 .brand-mark span { font-size:18px; align-self:flex-start; margin-top:6px; }
 .brand h1 { padding:0; margin:0; font-size:25px; font-weight:650; line-height:1.3; }
@@ -40,4 +40,12 @@ h2 { font-size: 2rem !important; font-weight: 600 !important; }
   .st-key-run_metrics [data-testid="stMetric"] { margin:0; padding:12px 14px; }
   .brand-tag { display:none; }
 }
-@media (max-width:700px) { .brand-tag { display:none; } .block-container { padding-top:1.2rem; } .promo-card { padding:16px; } .card-title h3 { font-size:17px; } .score { font-size:22px; } .empty { flex-direction:column; } }
+@media (max-width:700px) { .brand-tag { display:none; } .block-container { padding-top:4rem; } .promo-card { padding:16px; } .card-title h3 { font-size:17px; } .score { font-size:22px; } .empty { flex-direction:column; } }
+
+[data-testid="stPopoverButton"] button { width:100%; }
+.st-key-app_header { margin-bottom:1rem; }
+@container (max-width:650px) {
+  .st-key-app_header [data-testid="stHorizontalBlock"] { flex-wrap:wrap; gap:.6rem; }
+  .st-key-app_header [data-testid="stColumn"]:first-child { flex:1 1 100% !important; width:100% !important; }
+  .st-key-app_header [data-testid="stColumn"]:not(:first-child) { flex:1 1 40% !important; min-width:40% !important; }
+}

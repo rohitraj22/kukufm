@@ -12,7 +12,7 @@ python3.12 -m venv .venv
 .venv/bin/python -m streamlit run app.py --server.address 127.0.0.1
 ```
 
-Open the printed localhost URL. Click **Load fictional demo** for a working example without a key. Use the sidebar to configure live Gemini or select the timing-only baseline. Your local `.env` key is supported without showing it in the interface.
+Open the printed localhost URL. Click **Try a demo** for a working example without a key. Use Gemini access to enter a key when needed. Settings contains clip length, number of promos, and advanced options such as the timing-only baseline. Your local `.env` key is supported without showing it in the interface.
 
 ## Prepare a public deployment
 
@@ -27,7 +27,7 @@ Community Cloud provides free app hosting; model inference has separate account-
 
 ## Private data and session lifetime
 
-Uploads are parsed in memory. ZIPs are inspected without filesystem extraction. Network runs use a unique temporary directory for that browser session's raw responses and resumable cache; there is no cross-session cache or global upload registry. **Clear workspace** deletes that directory and clears loaded inputs, results, notes, and entered keys. Streamlit may retain a disconnected session briefly; process cleanup also removes temporary directories. Downloads already saved by a user are outside this cleanup.
+Uploads are parsed in memory. ZIPs are inspected without filesystem extraction. Network runs use a unique temporary directory for that browser session's raw responses and resumable cache; there is no cross-session cache or global upload registry. **Start over** deletes that directory and clears loaded inputs, results, notes, and entered keys. Streamlit may retain a disconnected session briefly; process cleanup also removes temporary directories. Downloads already saved by a user are outside this cleanup.
 
 On any hosted server, the hosting operator can access server memory and temporary files. Do not upload confidential benchmark material to a public demo without the appropriate authorization. Gemini mode also sends scripts to Google under the account's applicable API terms. The no-network baseline validates timing only and makes no semantic-quality claims. Use the CLI's local Ollama adapter when external AI processing is inappropriate.
 
