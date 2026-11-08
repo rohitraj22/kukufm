@@ -4,7 +4,7 @@
 }
 .stApp { background: radial-gradient(ellipse at 95% 5%, #e9ede1 0, transparent 42%), #f6f5ef; color: var(--ink); }
 [data-testid="stHeader"] { background: #f6f5efee; }
-.block-container { max-width: 1160px; padding-top: 5.5rem; padding-bottom: 3rem; container-type: inline-size; }
+.block-container { max-width: 1160px; padding-top: 3.75rem; padding-bottom: 3rem; container-type: inline-size; }
 h1, h2, h3, h4 { letter-spacing: -.035em; color: var(--ink); }
 h2 { font-size: 2rem !important; font-weight: 650 !important; }
 p { line-height: 1.6; }
@@ -151,5 +151,5 @@ hr { border-color: var(--line); }
   .st-key-upload_panel { padding: 18px; }
   .demo-copy h3 { font-size: 20px; }
   [data-testid="stFileUploaderDropzone"] { padding: 18px; }
-  .block-container { padding-top: 5rem; }
+  .block-container { padding-top: 3.75rem; }
 }
