@@ -45,7 +45,7 @@ def set_workspace(episodes, result=None, label="Uploaded screenplay"):
     if temporary:
         temporary.cleanup()
     for key in list(st.session_state):
-        if key.startswith(("edit_", "review_", "compare_", "candidate_", "timeline_")) or key in {"job_signature", "notice"}:
+        if key.startswith(("edit_", "review_", "compare_", "candidate_", "timeline_")) or key in {"job_signature", "notice", "upload_error", "loaded_upload", "attempted_upload"}:
             del st.session_state[key]
     st.session_state.update(episodes=episodes, result=result, reviews={}, workspace_label=label)
 
@@ -215,14 +215,43 @@ def discover(settings):
             st.markdown("#### Upload your screenplay")
             uploaded = st.file_uploader("TXT, JSON or ZIP of episodes", type=["txt", "json", "zip"], accept_multiple_files=True,
                                         key=f"uploads_{st.session_state.upload_epoch}", help="Timed TXT or normalized JSON. 25 MB total, 200 episodes. No estimated timestamps.")
-            if st.button("Load uploaded scripts", disabled=not uploaded, width="stretch"):
+            files = [(file.name, file.getvalue()) for file in uploaded]
+            signature = hashlib.sha256(json.dumps([
+                (name, hashlib.sha256(body).hexdigest()) for name, body in files
+            ]).encode()).hexdigest() if files else None
+            loaded = bool(signature and signature == st.session_state.get("loaded_upload"))
+            retry = st.button("Scripts loaded" if loaded else "Load uploaded scripts",
+                              disabled=not files or loaded, width="stretch")
+            # Process each new selection once. A separate button click is optional;
+            # unrelated widget reruns must not erase results or editor decisions.
+            if files and (retry or signature != st.session_state.get("attempted_upload")):
+                st.session_state.attempted_upload = signature
                 try:
-                    episodes, ignored = ingest_uploads((file.name, file.getvalue()) for file in uploaded)
+                    with st.spinner("Reading screenplay files…"):
+                        episodes, ignored = ingest_uploads(files)
                     set_workspace(episodes, label="Uploaded screenplay")
-                    st.session_state.notice = f"Loaded {len(episodes)} episodes. {len(ignored)} non-script or metadata files skipped."
+                    st.session_state.update(attempted_upload=signature, loaded_upload=signature,
+                        notice=f"Loaded {len(episodes)} episodes · {sum(len(e.beats) for e in episodes):,} timed beats. "
+                               f"{len(ignored)} metadata or non-script files skipped.")
                     st.rerun()
                 except InputError as exc:
-                    st.error(str(exc))
+                    st.session_state.upload_error = str(exc)
+            if files and st.session_state.get("upload_error"):
+                st.error(st.session_state.upload_error)
+            elif st.session_state.get("notice"):
+                st.success(st.session_state.notice)
+            elif not files:
+                st.caption("Files load automatically after upload. Then choose Analyze loaded scripts.")
+            if st.session_state.episodes and (not files or signature == st.session_state.get("loaded_upload")):
+                mode, entered_key, _, _, _, policy = settings
+                if mode == "Gemini AI":
+                    if not (entered_key.strip() or configured_key()):
+                        st.info("Next: open the sidebar using » at the top left and enter your Gemini API key, "
+                                "or select Timing-only baseline to test without a key.")
+                    st.caption("Analyze sends the loaded scripts to Google’s Gemini API. Use authorized inputs only.")
+                if st.button("Analyze loaded scripts" if not st.session_state.result else "Run / resume analysis",
+                             type="primary", disabled=policy is None, width="stretch"):
+                    analyze(settings)
         with demo_column:
             st.markdown("#### Explore a real AI run")
             st.write("Try two original fictional scripts with recorded Gemini results. No API key needed.")
@@ -236,19 +265,15 @@ def discover(settings):
                     archive.writestr("scoreboard.json", (ROOT / "examples/sports/scoreboard.json").read_bytes())
                 st.download_button("Fictional screenplay ZIP", stream.getvalue(), "fictional-screenplays.zip", "application/zip")
                 st.caption("The TXT adapter expects explicit episode headers and timed speaker/action blocks. Untimed screenplays need a separate alignment step.")
-    if st.session_state.get("notice"):
-        st.success(st.session_state.notice)
+    if files and signature != st.session_state.get("loaded_upload"):
+        st.info("The selected files could not be loaded. Correct the input and upload again, or retry above.")
+        return
     episodes = st.session_state.episodes
     if not episodes:
         st.markdown('<div class="empty"><span>01 · UPLOAD</span><span>02 · DISCOVER & CHECK</span><span>03 · REVIEW & EXPORT</span></div>', unsafe_allow_html=True)
         st.info("Kuku’s private screenplay pack is not bundled with this app. Use your own authorized inputs, or the fictional demo.")
         return
     st.caption(st.session_state.workspace_label)
-    mode, _, _, _, _, policy = settings
-    if mode == "Gemini AI":
-        st.caption("Analyze sends these scripts to Google’s Gemini API. Only process material you are authorized to send to that provider. Quotas and account billing settings apply.")
-    if st.button("Analyze loaded scripts" if not st.session_state.result else "Run / resume analysis", type="primary", disabled=policy is None):
-        analyze(settings)
     result = st.session_state.result
     if not result:
         left, right = st.columns(2)

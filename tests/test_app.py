@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -38,6 +39,36 @@ class AppTests(unittest.TestCase):
         self.assertTrue(result["provenance"]["synthetic"])
         self.assertEqual(len(self.app.session_state["episodes"]), 2)
         self.assertTrue(result["shortlist"])
+
+    def test_upload_loads_automatically_and_preserves_results_on_rerun(self):
+        source = (ROOT / "examples/scifi/airlock.txt").read_bytes()
+        with patch("streamlit.file_uploader", return_value=[SimpleNamespace(name="new.txt", getvalue=lambda: source)]):
+            self.app.run()
+            self.assertFalse(self.app.exception)
+            self.assertEqual(len(self.app.session_state["episodes"]), 1)
+            self.assertTrue(self.button("Scripts loaded").disabled)
+            self.assertTrue(any("Loaded 1 episodes" in item.value for item in self.app.success))
+            self.app.radio(key="mode").set_value("Timing-only baseline").run()
+            self.button("Analyze loaded scripts").click().run()
+            result = self.app.session_state["result"]
+            self.app.run()
+            self.assertFalse(self.app.exception)
+            self.assertEqual(self.app.session_state["result"], result)
+
+    def test_import_error_survives_rerun_and_new_valid_upload_recovers(self):
+        with patch("streamlit.file_uploader", return_value=[SimpleNamespace(name="broken.zip", getvalue=lambda: b"bad zip")]):
+            self.app.run()
+            self.assertFalse(self.app.exception)
+            self.assertTrue(self.app.error)
+            self.app.slider(key="top_count").set_value(5).run()
+            self.assertTrue(self.app.error)
+            self.assertEqual(self.app.session_state["episodes"], [])
+        source = (ROOT / "examples/scifi/airlock.txt").read_bytes()
+        with patch("streamlit.file_uploader", return_value=[SimpleNamespace(name="valid.txt", getvalue=lambda: source)]):
+            self.app.run()
+            self.assertFalse(self.app.exception)
+            self.assertFalse(self.app.error)
+            self.assertEqual(len(self.app.session_state["episodes"]), 1)
 
     def test_review_compare_and_exported_decision(self):
         self.demo()
