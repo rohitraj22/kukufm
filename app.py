@@ -249,26 +249,27 @@ def discover(settings):
             loaded = bool(signature and signature == st.session_state.get("loaded_upload"))
             retry = st.button("Scripts loaded" if loaded else "Load uploaded scripts",
                               disabled=not files or loaded, width="stretch")
-            # Process each new selection once. A separate button click is optional;
-            # unrelated widget reruns must not erase results or editor decisions.
-            if files and (retry or signature != st.session_state.get("attempted_upload")):
+            # Upload stages files; only this explicit action replaces the workspace.
+            if files and retry:
                 st.session_state.attempted_upload = signature
                 try:
                     with st.spinner("Reading screenplay files…"):
                         episodes, ignored = ingest_uploads(files)
                     set_workspace(episodes, label="Uploaded screenplay")
                     st.session_state.update(attempted_upload=signature, loaded_upload=signature,
-                        notice=f"Loaded {len(episodes)} episodes · {sum(len(e.beats) for e in episodes):,} timed beats. "
+                        notice=f"Loaded {len(episodes)} {'episode' if len(episodes) == 1 else 'episodes'} · {sum(len(e.beats) for e in episodes):,} timed beats. "
                                f"{len(ignored)} metadata or non-script files skipped.")
                     st.rerun()
                 except InputError as exc:
                     st.session_state.upload_error = str(exc)
-            if files and st.session_state.get("upload_error"):
+            if files and signature == st.session_state.get("attempted_upload") and st.session_state.get("upload_error"):
                 st.error(st.session_state.upload_error)
+            elif files and not loaded:
+                st.info(f"{len(files)} file(s) selected. Click Load uploaded scripts to parse and validate them.")
             elif st.session_state.get("notice"):
                 st.success(st.session_state.notice)
             elif not files:
-                st.caption("Files load automatically after upload. Then choose Analyze loaded scripts.")
+                st.caption("Select files, click Load uploaded scripts, then choose Analyze loaded scripts.")
             if st.session_state.episodes and (not files or signature == st.session_state.get("loaded_upload")):
                 mode, entered_key, _, _, _, policy = settings
                 if mode == "Gemini AI":
@@ -298,7 +299,6 @@ def discover(settings):
                 st.download_button("Fictional screenplay ZIP", stream.getvalue(), "fictional-screenplays.zip", "application/zip")
                 st.caption("The TXT adapter expects explicit episode headers and timed speaker/action blocks. Untimed screenplays need a separate alignment step.")
     if files and signature != st.session_state.get("loaded_upload"):
-        st.info("The selected files could not be loaded. Correct the input and upload again, or retry above.")
         return
     episodes = st.session_state.episodes
     if not episodes:
