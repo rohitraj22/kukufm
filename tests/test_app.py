@@ -1,5 +1,6 @@
 """Behavioral tests of the real Streamlit application, with no network calls."""
 
+import os
 from pathlib import Path
 import tempfile
 from types import SimpleNamespace
@@ -12,6 +13,7 @@ except ImportError:
     AppTest = None
 
 from promo_finder.parser import load_episodes
+from promo_finder.providers import ProviderError
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -69,6 +71,44 @@ class AppTests(unittest.TestCase):
             self.assertFalse(self.app.exception)
             self.assertFalse(self.app.error)
             self.assertEqual(len(self.app.session_state["episodes"]), 1)
+
+    def test_shared_quota_failure_switches_to_visitor_key_and_keeps_cache(self):
+        used_keys = []
+        def quota(provider, *args, **kwargs):
+            used_keys.append(provider.key)
+            raise ProviderError("Quota exhausted", credential_issue=True)
+        with patch.dict(os.environ, {"GEMINI_API_KEY": "shared-test-key"}):
+            self.app.session_state["episodes"] = load_episodes(ROOT / "examples/scifi/airlock.txt")
+            self.app.run()
+            with patch("promo_finder.providers.JSONProvider.generate", quota):
+                self.button("Analyze loaded scripts").click().run()
+            self.assertFalse(self.app.exception)
+            self.assertEqual(used_keys, ["shared-test-key"])
+            self.assertTrue(self.app.session_state["shared_key_unavailable"])
+            directory = self.app.session_state["job_directory"].name
+            self.app.text_input(key="visitor_key").set_value("visitor-test-key").run()
+            def success(provider, *args, **kwargs):
+                used_keys.append(provider.key)
+                return {"candidates": []}
+            with patch("promo_finder.providers.JSONProvider.generate", success):
+                self.button("Run / resume analysis").click().run()
+            self.assertFalse(self.app.exception)
+            self.assertEqual(used_keys[-1], "visitor-test-key")
+            self.assertEqual(directory, self.app.session_state["job_directory"].name)
+            self.assertEqual(os.environ["GEMINI_API_KEY"], "shared-test-key")
+            self.assertTrue(self.app.session_state["result"]["manifest"]["complete"])
+            self.button("Retry shared access").click().run()
+            self.assertFalse(self.app.session_state.get("shared_key_unavailable", False))
+            self.assertEqual(self.app.session_state["visitor_key"], "")
+
+    def test_request_budget_does_not_disable_shared_key(self):
+        with patch.dict(os.environ, {"GEMINI_API_KEY": "shared-test-key"}):
+            self.app.session_state["episodes"] = load_episodes(ROOT / "examples/scifi/airlock.txt")
+            self.app.run()
+            with patch("promo_finder.providers.JSONProvider.generate", side_effect=ProviderError("Request budget reached")):
+                self.button("Analyze loaded scripts").click().run()
+            self.assertFalse(self.app.exception)
+            self.assertFalse(self.app.session_state.get("shared_key_unavailable", False))
 
     def test_review_compare_and_exported_decision(self):
         self.demo()

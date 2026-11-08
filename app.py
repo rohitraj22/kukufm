@@ -75,6 +75,19 @@ def configured_key():
     return value
 
 
+def active_credentials(entered_key):
+    if entered_key.strip():
+        return entered_key.strip(), "visitor"
+    if st.session_state.get("shared_key_unavailable"):
+        return "", "unavailable"
+    return configured_key(), "shared"
+
+
+def retry_shared_key():
+    st.session_state.pop("shared_key_unavailable", None)
+    st.session_state.visitor_key = ""
+
+
 def controls():
     with st.sidebar:
         st.markdown("### Your workspace")
@@ -83,9 +96,20 @@ def controls():
         st.caption("The baseline checks cut boundaries; it does not assess narrative quality.")
         key, model, max_calls = "", DEFAULT_MODEL, 30
         if mode == "Gemini AI":
-            key = st.text_input("Gemini API key", type="password", key="visitor_key", placeholder="Optional if a server key is configured")
-            if not key and configured_key():
-                st.caption("✓ Local / server API key configured")
+            shared = bool(configured_key())
+            unavailable = st.session_state.get("shared_key_unavailable", False)
+            if shared and not unavailable:
+                st.success("Shared Gemini access is ready. No key needed to start.")
+            elif unavailable:
+                st.warning("Shared Gemini access hit a quota or key restriction. Enter your own key to continue, "
+                           "or retry shared access later. Completed work is saved in this session.")
+                st.button("Retry shared access", on_click=retry_shared_key)
+            with st.expander("Use your own Gemini API key", expanded=unavailable or not shared):
+                key = st.text_input("Gemini API key", type="password", key="visitor_key",
+                                    placeholder="Your key overrides shared access for this session")
+                st.caption("Stored only in your session. Never added to server settings or logs.")
+            if key.strip():
+                st.caption("Using your key for new requests.")
             with st.expander("Model & request budget"):
                 model = st.text_input("Model ID", DEFAULT_MODEL, key="model_id")
                 max_calls = st.number_input("Maximum API requests per click", 2, 60, 30, step=1, key="call_limit")
@@ -177,7 +201,7 @@ def analyze(settings):
     episodes = st.session_state.episodes
     try:
         if mode == "Gemini AI":
-            key = entered_key.strip() or configured_key()
+            key, key_source = active_credentials(entered_key)
             if not key:
                 st.error("Enter a Gemini API key in the sidebar, or choose the timing-only baseline.")
                 return
@@ -200,6 +224,9 @@ def analyze(settings):
             result = read_run(directory)
             result["provenance"] = {"kind": "live_session_run", "synthetic": False}
             st.session_state.result = result
+            if mode == "Gemini AI" and key_source == "shared" and any(
+                    error.get("credential_issue") for error in result["manifest"]["errors"]):
+                st.session_state.shared_key_unavailable = True
             status.update(label="Analysis complete" if result["manifest"]["complete"] else "Partial results saved", state="complete")
         st.rerun()
     except (InputError, ProviderError, ValueError) as exc:
@@ -245,9 +272,14 @@ def discover(settings):
             if st.session_state.episodes and (not files or signature == st.session_state.get("loaded_upload")):
                 mode, entered_key, _, _, _, policy = settings
                 if mode == "Gemini AI":
-                    if not (entered_key.strip() or configured_key()):
-                        st.info("Next: open the sidebar using » at the top left and enter your Gemini API key, "
-                                "or select Timing-only baseline to test without a key.")
+                    key_ready, source = active_credentials(entered_key)
+                    if source == "unavailable":
+                        st.warning("Shared Gemini access is currently unavailable. Open the sidebar (»), enter your own "
+                                   "Gemini API key, then click Run / resume analysis. Completed responses are reused.")
+                    elif not key_ready:
+                        st.info("Open the sidebar (») and enter a Gemini API key. Shared access has not been configured yet.")
+                    elif source == "shared":
+                        st.caption("Using shared Gemini access — no personal API key needed.")
                     st.caption("Analyze sends the loaded scripts to Google’s Gemini API. Use authorized inputs only.")
                 if st.button("Analyze loaded scripts" if not st.session_state.result else "Run / resume analysis",
                              type="primary", disabled=policy is None, width="stretch"):

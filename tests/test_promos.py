@@ -300,6 +300,21 @@ class TransportTests(unittest.TestCase):
             self.assertNotIn('fake-secret-test-only', str(ctx.exception))
             self.assertNotIn('fake-secret-test-only', ''.join(f.read_text() for f in Path(d).iterdir()))
 
+    def test_only_quota_or_credential_http_errors_request_another_key(self):
+        for code, message, expected in [(429, "daily quota exceeded", True),
+                (401, "unauthorized", True), (403, "permission denied", True),
+                (400, "API_KEY_INVALID", True), (400, "schema invalid", False),
+                (404, "model missing", False), (503, "temporarily unavailable", False)]:
+            with self.subTest(code=code, message=message), tempfile.TemporaryDirectory() as directory:
+                provider = JSONProvider("gemini", "test-model", Path(directory), api_key="test-only", min_interval=0)
+                def fail(*args, **kwargs):
+                    raise HTTPError("https://example.test", code, "error", {},
+                                    io.BytesIO(json.dumps({"error": {"message": message}}).encode()))
+                with patch("promo_finder.providers.request.urlopen", side_effect=fail), patch("promo_finder.providers.time.sleep"):
+                    with self.assertRaises(ProviderError) as caught:
+                        provider.generate("test", SELECTION_SCHEMA, "discovery")
+                self.assertEqual(caught.exception.credential_issue, expected)
+
     def test_discovery_rejects_pair_outside_legal_catalog(self):
         class ArbitraryPairProvider(FakeProvider):
             def generate(self, prompt, schema, stage):

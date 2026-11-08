@@ -126,7 +126,8 @@ def run(episodes, output: Path, provider=None, top=10, batch_size=5, progress=pr
                 count = sum(any(s["episode"] == episode.number for s in c["segments"]) for c in kept)
                 coverage[episode.number].update(status="baseline_processed" if baseline else "ai_processed", candidate_count=count)
         except ProviderError as exc:
-            errors.append({"batch": index, "episodes": [e.number for e in batch], "error": str(exc)})
+            errors.append({"batch": index, "episodes": [e.number for e in batch], "error": str(exc),
+                           "credential_issue": exc.credential_issue})
             for episode in batch:
                 coverage[episode.number]["status"] = "failed"
             progress(f"Stopped: {exc}")

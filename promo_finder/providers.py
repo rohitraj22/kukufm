@@ -12,7 +12,9 @@ from .prompts import SYSTEM, VERSION
 
 
 class ProviderError(RuntimeError):
-    pass
+    def __init__(self, message, *, credential_issue=False):
+        super().__init__(message)
+        self.credential_issue = credential_issue
 
 
 def gemini_wire_schema(value):
@@ -147,7 +149,9 @@ class JSONProvider:
                                     ("Quota unavailable/exhausted: check AI Studio limits and resume later. " if exc.code == 429 else
                                      "Check API key, model availability, and provider status. ") +
                                     "Completed work is cached; no paid-provider fallback." +
-                                    (f" API detail: {message}" if message else "")) from None
+                                    (f" API detail: {message}" if message else ""),
+                                    credential_issue=(exc.code in {401, 403, 429} or
+                                        (exc.code == 400 and bool(re.search(r"API_KEY_INVALID|API key not valid|API key expired", detail, re.I))))) from None
             except (error.URLError, TimeoutError, OSError):
                 raise ProviderError(f"Cannot reach {self.name}. Check connection/local server. Completed work is cached.") from None
             except (json.JSONDecodeError, KeyError, TypeError, AttributeError):
